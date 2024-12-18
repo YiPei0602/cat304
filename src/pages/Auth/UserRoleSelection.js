@@ -41,13 +41,13 @@ const UserRoleSelection = () => {
 
   return (
     <div className="user-role-container">
-      <div 
-        className="background-section" 
-        style={{ 
+      <div
+        className="background-section"
+        style={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
-          backgroundSize: 'cover'
+          backgroundSize: 'cover',
         }}
       >
         <div className="overlay-text">
@@ -56,12 +56,10 @@ const UserRoleSelection = () => {
         </div>
       </div>
 
-      <header className="header">
-        <div className="logo">USM E-Donation System</div>
-        <div className="current-time">
-          <p>{formatDate(currentTime)}</p>
-        </div>
-      </header>
+      <div className="top-bar">
+        <div className="system-name">USM E-Donation System</div>
+        <div className="current-time">{formatDate(currentTime)}</div>
+      </div>
 
       <div className="content-wrapper">
         <div className="content">
@@ -103,10 +101,10 @@ const UserRoleSelection = () => {
         </div>
       </div>
 
-      <footer className="footer">
-        <p>© 2024 USM E-Donation Portal</p>
-      </footer>
+      <div className="bottom-bar">
+      <p>© 2024 USM E-Donation Portal | Universiti Sains Malaysia</p>
     </div>
+  </div>
   );
 };
 

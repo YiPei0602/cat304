@@ -13,17 +13,24 @@
 /* Background Section */
 .background-section {
   position: relative;
-  height: 50vh;
+  height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 50px;
+  margin-top: 0; /* Ensure no margin */
+  background-image: url('../../assets/love.jpg');
+  background-repeat: no-repeat;
+  background-position: top center; /* Align image to the top */
+  background-size: cover;
 }
 
 .overlay-text {
   position: absolute;
   color: white;
   text-align: center;
+  top: 30%; /* Adjusted to move higher */
 }
 
 .overlay-text h1 {
@@ -39,34 +46,32 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Header Styling */
-.header {
-  position: absolute;
+/* Top bar container */
+.top-bar {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 20px 40px;
+  height: 40px; /* Adjusted for more space */
+  padding: 5px 50px; /* Adjust padding for proper spacing */
   display: flex;
-  justify-content: space-between; /* Align items on the left and right */
-  align-items: center;
-  z-index: 10;
+  justify-content: space-between; /* Ensures elements are spaced out on the left and right */
+  align-items: center; /* Aligns items vertically in the middle */
+  background-color: rgba(0, 0, 0, 0.1); /* Slightly transparent */
+  z-index: 1000;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-/* Logo Styling */
-.logo {
-  font-size: 24px;
+/* System name styling */
+.system-name {
+  font-size: 1rem; /* Ensure this is the same as current-time */
   font-weight: bold;
-  color: #fff;
-  text-shadow: 1px 1px 2px #000;
   margin: 0;
 }
 
-/* Timer Styling */
 .current-time {
-  position: relative; /* Ensure it's in the same row */
-  font-size: 16px;
-  color: #333;
-  margin-left: 20px; /* Space between the logo and the timer */
+  margin-left: 10px; /* Optional: Add space between the system name and the current time */
 }
 
 /* Content Wrapper */
@@ -74,11 +79,11 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: -100px; /* Adjusted to move content up */
+  margin-top: -130px; /* Adjusted to move content up */
   z-index: 5;
+  position: relative;
 }
 
-/* Content Styling */
 .content {
   background-color: white;
   padding: 30px;
@@ -87,6 +92,7 @@
   width: 55%;
   max-width: 700px;
   text-align: center;
+  transform: translateY(-80px); /* Add this line to move the square up */
 }
 
 /* Welcome message */
@@ -152,15 +158,19 @@
   color: #a6a6a6;
 }
 
-/* Footer */
-.footer {
-  background-color: #e0e0e0;
-  text-align: center;
-  padding: 10px;
+/* Bottom bar container */
+.bottom-bar {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
-  color: #333;
+  height: 40px; /* Match top-bar height */
+  padding: 5px 50px; /* Match top-bar padding */
+  display: flex;
+  justify-content: center; /* Center the content */
+  align-items: center; /* Aligns items vertically in the middle */
+  z-index: 1000;
+  color: black;
 }
 
 @media (max-width: 768px) {
