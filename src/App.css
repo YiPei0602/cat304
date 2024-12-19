@@ -38,6 +38,7 @@ body, html {
   font-weight: bold;
   background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(128, 128, 128, 0.9));
   -webkit-background-clip: text;
+  background-clip: text; /* Add the standard property */
   color: transparent;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }

@@ -1,0 +1,104 @@
+/* General container styling */
+.container-scroller {
+  display: flex;
+  flex-direction: row; /* Use row to align sidebar and main content horizontally */
+  height: 100vh;
+}
+
+/* Navbar styling */
+.navbar {
+  background-color: #2f3542;
+  color: white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000; /* Ensure the navbar stays on top of other elements */
+}
+
+.navbar-brand img {
+  height: 30px;
+}
+
+.navbar-toggler {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.icon-menu {
+  font-size: 1.2rem;
+}
+
+/* Sidebar styling */
+.sidebar {
+  background-color: #1e272e;
+  color: white;
+  width: 250px;
+  height: 100%;
+  position: fixed;
+  top: 0; /* Ensure sidebar stays fixed at the top */
+  left: 0;
+  padding-top: 20px;
+  z-index: 999; /* Ensure sidebar stays under the navbar */
+}
+
+.sidebar .nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar .nav-item {
+  margin: 10px 0;
+}
+
+.sidebar .nav-link {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  transition: background 0.3s;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #57606f;
+  border-radius: 5px;
+}
+
+.menu-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.menu-title {
+  font-size: 1rem;
+}
+
+/* Main content area */
+.main-panel {
+  margin-left: 250px; /* Space for sidebar */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.content-wrapper {
+  background-color: #f1f2f6;
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.content-wrapper h1 {
+  font-size: 2rem;
+  color: #2f3542;
+}
+
+.content-wrapper p {
+  font-size: 1rem;
+  color: #57606f;
+}
