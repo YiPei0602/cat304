@@ -1,16 +1,31 @@
-import { useLocation } from "react-router-dom";
+//change to the general dashboard
 
-const Dashboard = () => {
-    const location = useLocation();
-    const { role, name } = location.state;
+// import { useLocation, Navigate}from 'react-router-dom';
+// import Sidebar from '../components/Sidebar';
 
-    return (
-        <div className="container text-center mt-5">
-            <h1>Dashboard</h1>
-            <h2>Welcome, {name}</h2>
-            <p>Your role is  {role}</p>
-        </div>
-    )
-};
+// const Dashboard = () => {
+//     const location = useLocation();
+//     // Try to get state from location, fall back to localStorage
+//     const role = location.state?.role || localStorage.getItem('userRole');
+//     const name = location.state?.name || localStorage.getItem('userName');
 
-export default Dashboard;
+//     // Redirect to login if no role is found
+//     if (!role) {
+//         return <Navigate to="/login" />;
+//     }
+
+//     return (
+//         <div className="dashboard-layout">
+//             <Sidebar userRole={role} />
+//             <div className="dashboard-content">
+//                 <div className="container">
+//                     <h1>Dashboard</h1>
+//                     <h2>Welcome, {name}</h2>
+//                     <p>Your role is {role}</p>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default Dashboard;
