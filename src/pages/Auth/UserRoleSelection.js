@@ -3,10 +3,12 @@ import './UserRoleSelection.css';
 import backgroundImage from '../../assets/love.jpg';
 import { Card, Button, Row, Col } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const UserRoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const navigate = useNavigate();
 
   const roles = [
     { id: 'student', label: 'Student', description: 'Click here to log in as a student.' },
@@ -16,6 +18,12 @@ const UserRoleSelection = () => {
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
+  };
+
+  const handleSignUp = () => {
+    if(selectedRole) {
+      navigate('/Signup', { state: {role: selectedRole } });
+    }
   };
 
   useEffect(() => {
@@ -41,13 +49,13 @@ const UserRoleSelection = () => {
 
   return (
     <div className="user-role-container">
-      <div
-        className="background-section"
-        style={{
+      <div 
+        className="background-section" 
+        style={{ 
           backgroundImage: `url(${backgroundImage})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
-          backgroundSize: 'cover',
+          backgroundSize: 'cover'
         }}
       >
         <div className="overlay-text">
@@ -56,10 +64,12 @@ const UserRoleSelection = () => {
         </div>
       </div>
 
-      <div className="top-bar">
-        <div className="system-name">USM E-Donation System</div>
-        <div className="current-time">{formatDate(currentTime)}</div>
-      </div>
+      <header className="header">
+        <div className="logo">USM E-Donation System</div>
+        <div className="current-time">
+          <p>{formatDate(currentTime)}</p>
+        </div>
+      </header>
 
       <div className="content-wrapper">
         <div className="content">
@@ -93,7 +103,7 @@ const UserRoleSelection = () => {
               type="primary"
               size="large"
               disabled={!selectedRole}
-              onClick={() => alert(`Getting started as ${selectedRole}`)}
+              onClick={handleSignUp}
             >
               Get Started
             </Button>
@@ -101,10 +111,10 @@ const UserRoleSelection = () => {
         </div>
       </div>
 
-      <div className="bottom-bar">
-      <p>© 2024 USM E-Donation Portal | Universiti Sains Malaysia</p>
+      <footer className="footer">
+        <p>© 2024 USM E-Donation Portal</p>
+      </footer>
     </div>
-  </div>
   );
 };
 
