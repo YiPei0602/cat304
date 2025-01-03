@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getAuth } from 'firebase/auth';  // Import authentication methods
-import { getFirestore, collection, addDoc } from 'firebase/firestore';  // Firestore methods
+import { getAuth } from 'firebase/auth';  
+import { getFirestore, collection, addDoc } from 'firebase/firestore';  
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ResourceRequestForm = () => {
   const [category, setCategory] = useState('');
@@ -8,19 +9,25 @@ const ResourceRequestForm = () => {
   const [details, setDetails] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [userEmail, setUserEmail] = useState('');  // State to hold the user's email
+  const [userEmail, setUserEmail] = useState('');  
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const role = location.state?.role || localStorage.getItem('userRole');
+  const name = location.state?.name || localStorage.getItem('userName');
 
   // Automatically retrieve the user's email on component mount
   useEffect(() => {
     const auth = getAuth();
-    const user = auth.currentUser;  // Get the currently signed-in user
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserEmail(user.email); // Set the user's email if they're signed in
+      } else {
+        setError('User is not logged in');
+      }
+    });
 
-    if (user) {
-      setUserEmail(user.email);  // Set the user's email if they're signed in
-    } else {
-      // Handle case where the user is not logged in (optional)
-      setError('User is not logged in');
-    }
+    return () => unsubscribe(); // Clean up listener on component unmount
   }, []);
 
   const handleSubmit = async (e) => {
@@ -45,7 +52,7 @@ const ResourceRequestForm = () => {
         throw new Error('User not authenticated');
       }
 
-      // Data to be stored in Firestore under 'recipientRequests'
+      // Data to be stored in 'recipientRequests'
       const requestData = {
         category,
         productName,
@@ -57,22 +64,55 @@ const ResourceRequestForm = () => {
 
       // Add request to Firestore in 'recipientRequests' collection
       await addDoc(collection(firestore, 'recipientRequests'), requestData);
+      
+      await addDoc(collection(firestore, 'collectionHistory'), {
+        userId: user.uid,
+        userName: name,
+        itemName: productName,
+        category,
+        status: 'Pending',
+        collectedAt: new Date()
+      });
 
       alert('Request Submitted Successfully');
       // Reset the form fields
       setCategory('');
       setProductName('');
       setDetails('');
+
+      navigate('/collectionHistory');
+
     } catch (error) {
       setError('Error submitting request: ' + error.message);
     } finally {
       setLoading(false);
     }
   };
+  
+  const handleClose = () => {
+    navigate('/itemlist');
+  };
 
   return (
     <div>
+      <button
+        onClick={handleClose}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          background: 'none',
+          border: 'none',
+          color: '#000',
+          fontSize: '24px',
+          cursor: 'pointer',
+        }}
+      >
+        X
+      </button>
       <h2>Resource Request Form</h2>
+      <p>Welcome, {name}!</p>
+      <p>Your role: {role}</p>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <label htmlFor="category">Category:</label>
@@ -84,10 +124,11 @@ const ResourceRequestForm = () => {
           required
         >
           <option value="">Select Category</option>
-          <option value="electronics">Electronics</option>
-          <option value="furniture">Furniture</option>
-          <option value="stationery">Stationery</option>
-          <option value="software">Software</option>
+          <option value="Food">Food</option>
+          <option value="Hygiene Products">Hygiene Products</option>
+          <option value="Stationery">Stationery</option>
+          <option value="School Supplies">School Supplies</option>
+          <option value="Daily Supplies">Daily Supplies</option>
         </select>
         <br /><br />
 

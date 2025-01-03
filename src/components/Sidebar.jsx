@@ -4,30 +4,31 @@ import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 
 // Icons
-import { FaHome } from 'react-icons/fa';
-import { MdInventory } from "react-icons/md";
+import { FaHome, FaHistory } from 'react-icons/fa';
+import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
+import { IoMdNotifications } from "react-icons/io";
 
 const menuConfig = {
   admin: [
     { title: "Dashboard", path: "/adminDashboard", icon: <FaHome />},
     { title: "Inventory", path: "/inventory", icon: <MdInventory /> },
     { title: "Reports", path: "/reports" },
-    { title: "Settings", path: "/settings" },
-    { title: "Notifications", path: "/notifications" },
+    { title: "Settings", path: "/settings" , icon: <MdOutlineSettings/> },
+    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications/> },
     { title: "System Logs", path: "/systemlogs" },
   ],
   student: [
     { title: "Dashboard", path: "/studentDashboard", icon: <FaHome />},
-    { title: "Item List", path: "/itemlist" },
-    { title: "History", path: "/history" },
-    { title: "Settings", path: "/settings" },
-    { title: "Notifications", path: "/notifications" },
+    { title: "Item List", path: "/itemlist" , icon: <MdOutlineViewList />},
+    { title: "History", path: "/collectionHistory", icon: <FaHistory /> },
+    { title: "Settings", path: "/settings", icon: <MdOutlineSettings/> },
+    { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/> },
   ],
   donor: [
     { title: "Dashboard", path: "/donorDashboard", icon: <FaHome />},
     { title: "Transactions", path: "/transactions" },
-    { title: "Notifications", path: "/notifications" },
-    { title: "Settings", path: "/settings" },
+    { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/>},
+    { title: "Settings", path: "/settings", icon: <MdOutlineSettings/>  },
   ],
 };
 
