@@ -3,7 +3,7 @@ import './Form.css';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
 import { useLocation, useNavigate } from 'react-router-dom';
-import app from '../../firebase';
+import { app } from '../../firebase';
 
 const Signup = () => {
 
@@ -197,6 +197,12 @@ const Signup = () => {
       console.log('Form submitted:', formData);
       console.log('User signed up successfully');
       alert('Account created successfully!');
+
+      // Save to localStorage
+      localStorage.setItem('userId', user.uid);
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userName', name);
+      localStorage.setItem('userPhone', phoneNum);
 
       navigate('/Login');
 

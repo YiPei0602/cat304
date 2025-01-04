@@ -104,7 +104,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import app from '../../firebase';
+import { app } from '../../firebase';
 import './Form.css';
 
 const Login = () => {
@@ -130,11 +130,15 @@ const Login = () => {
         const userData = userDoc.data();
         const userRole = userData.role;
         const userName = userData.name;
+        
 
         // Store user information in localStorage
         localStorage.setItem('userRole', userRole);
         localStorage.setItem('userName', userName);
         localStorage.setItem('userId', user.uid);
+        localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userPhone', userData.phone_num || '');
+
 
         if (userRole === 'admin') {
           navigate('/adminDashboard', {
