@@ -5,10 +5,10 @@ import { Card, Button, Row, Col } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
-const UserRoleSelection = () => {
+const UserRoleSelection = ({ setRole }) => {  // Accept setRole from App.js
   const [selectedRole, setSelectedRole] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigate
 
   const roles = [
     { id: 'student', label: 'Student', description: 'Click here to log in as a student.' },
@@ -18,12 +18,6 @@ const UserRoleSelection = () => {
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
-  };
-
-  const handleSignUp = () => {
-    if(selectedRole) {
-      navigate('/Signup', { state: {role: selectedRole } });
-    }
   };
 
   useEffect(() => {
@@ -47,15 +41,20 @@ const UserRoleSelection = () => {
     return date.toLocaleDateString('en-US', options);
   };
 
+  const handleGetStarted = () => {
+    setRole(selectedRole);   // Update role in App.js when "Get Started" is clicked
+    navigate('/dashboard');  // Redirect to the dashboard page
+  };
+
   return (
     <div className="user-role-container">
-      <div 
-        className="background-section" 
-        style={{ 
+      <div
+        className="background-section"
+        style={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
-          backgroundSize: 'cover'
+          backgroundSize: 'cover',
         }}
       >
         <div className="overlay-text">
@@ -64,17 +63,15 @@ const UserRoleSelection = () => {
         </div>
       </div>
 
-      <header className="header">
-        <div className="logo">USM E-Donation System</div>
-        <div className="current-time">
-          <p>{formatDate(currentTime)}</p>
-        </div>
-      </header>
+      <div className="top-bar">
+        <div className="system-name">USM HungerHelp System</div>
+        <div className="current-time">{formatDate(currentTime)}</div>
+      </div>
 
       <div className="content-wrapper">
         <div className="content">
           <div className="welcome-message">
-            <h2>Welcome to USM E-donation System</h2>
+            <h2>Welcome to USM HungerHelp System</h2>
             <p>Select your user type before getting started.</p>
           </div>
 
@@ -103,7 +100,10 @@ const UserRoleSelection = () => {
               type="primary"
               size="large"
               disabled={!selectedRole}
-              onClick={handleSignUp}
+              onClick={() => {
+                alert(`Getting started as ${selectedRole}`);
+                handleGetStarted();
+              }}
             >
               Get Started
             </Button>
@@ -111,10 +111,10 @@ const UserRoleSelection = () => {
         </div>
       </div>
 
-      <footer className="footer">
-        <p>© 2024 USM E-Donation Portal</p>
-      </footer>
+      <div className="bottom-bar">
+      <p>© 2024 USM HungerHelp Portal | Universiti Sains Malaysia</p>
     </div>
+  </div>
   );
 };
 
