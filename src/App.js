@@ -11,6 +11,8 @@ import Inventory from './pages/admin/inventory';
 import DonorDashboard from './pages/donor/donorDashboard';
 import ItemList from './pages/Student/itemList';
 import CollectionHistory from './pages/Student/collectionHistory';
+import DonorApplication from "./pages/Review/DonorApplication";
+import StudentApplication from './pages/Review/StudentApplication';
 
 function App() {
 
@@ -28,6 +30,9 @@ function App() {
         <Route path="/itemList" element ={<ItemList/>}/>
         <Route path="/inventory" element ={<Inventory/>}/>
         <Route path="/collectionHistory" element ={<CollectionHistory/>}/>
+        <Route path="/student-application" element={<StudentApplication />} />
+        <Route path="/donor-application" element={<DonorApplication />} />
+
       </Routes>
     </Router>
     </>

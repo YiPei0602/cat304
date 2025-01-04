@@ -4,29 +4,40 @@ import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 
 // Icons
-import { FaHome, FaHistory } from 'react-icons/fa';
+import { FaHome, FaHistory, FaTasks } from "react-icons/fa"; // Add FaTasks
 import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 
 const menuConfig = {
   admin: [
-    { title: "Dashboard", path: "/adminDashboard", icon: <FaHome />},
+    { title: "Dashboard", path: "/adminDashboard", icon: <FaHome /> },
     { title: "Inventory", path: "/inventory", icon: <MdInventory /> },
     { title: "Reports", path: "/reports" },
-    { title: "Settings", path: "/settings" , icon: <MdOutlineSettings/> },
-    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications/> },
+    {
+      title: "Review Application",
+      icon: <FaTasks />,
+      children: [
+        { title: "Student Application", path: "/student-application" },
+        { title: "Donor Application", path: "/donor-application" },
+      ],
+    },
+    { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
+    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
     { title: "System Logs", path: "/systemlogs" },
   ],
+
   student: [
     { title: "Dashboard", path: "/studentDashboard", icon: <FaHome />},
     { title: "Item List", path: "/itemlist" , icon: <MdOutlineViewList />},
     { title: "History", path: "/collectionHistory", icon: <FaHistory /> },
+    { title: "Track Status", path: "/trackStatus" },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings/> },
     { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/> },
   ],
   donor: [
     { title: "Dashboard", path: "/donorDashboard", icon: <FaHome />},
     { title: "Transactions", path: "/transactions" },
+    { title: "Track Status", path: "/trackStatus" },
     { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/>},
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings/>  },
   ],
@@ -35,76 +46,71 @@ const menuConfig = {
 const Sidebar = ({ userRole }) => {
   const navigate = useNavigate();
   const Menus = menuConfig[userRole] || [];
+  const [expandedMenu, setExpandedMenu] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
-  const handleMenuClick = (path) => {
-    // Navigate programmatically to the specified path
-    navigate(path);
+  const handleMenuClick = (path) => navigate(path);
+
+  const toggleSubMenu = (menuTitle) => {
+    setExpandedMenu((prev) => (prev === menuTitle ? null : menuTitle));
   };
 
   const handleLogout = async () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    
-    if (confirmLogout){
-    try {
-      const auth = getAuth(app);
-      await signOut(auth); // Sign the user out
-      localStorage.removeItem("userRole"); // Clear user data from localStorage
-      localStorage.removeItem("userName");
-      localStorage.removeItem("userId");
-
-      // Redirect to login page
-      navigate("/login");
-    } catch (err) {
-      console.error("Logout error:", err);
+    if (window.confirm("Are you sure you want to log out?")) {
+      try {
+        const auth = getAuth(app);
+        await signOut(auth);
+        localStorage.clear();
+        navigate("/login");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
     }
-  }
   };
 
   return (
-    <div className={`sidebar bg-dark text-white vh-100 p-3 ${isCollapsed ? "collapsed" : ""}`} >
-      {/* Collapse/Expand Button */}
-      <button
-        className="collapse-btn"
-        onClick={toggleSidebar}
-        aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-      >
+    <div className={`sidebar bg-dark text-white vh-100 p-3 ${isCollapsed ? "collapsed" : ""}`}>
+      <button className="collapse-btn" onClick={toggleSidebar}>
         {isCollapsed ? ">" : "<"}
       </button>
-
-      {/* Sidebar Header */}
       <div className="mb-4">
-        <h5>
-          {userRole.charAt(0).toUpperCase() + userRole.slice(1)} Portal
-        </h5>
+        <h5>{userRole.charAt(0).toUpperCase() + userRole.slice(1)} Portal</h5>
       </div>
-
-      {/* Sidebar Menu */}
       <ul className="nav flex-column">
         {Menus.map((menu, index) => (
-          <li
-            key={index}
-            className={`nav-item mb-2 ${index === 0 ? "active" : ""}`}
-            onClick={() => handleMenuClick(menu.path)} // Handle click to navigate
-          >
-            <span className="nav-link text-white rounded d-flex align-items-center">
-              <span className="me-2">{menu.icon}</span>
-              {/* menu.title  */}
-              {!isCollapsed && <span className="text">{menu.title}</span>}
-            </span>
+          <li key={index}>
+            <div
+              className={`nav-item mb-2 ${menu.children ? "dropdown" : ""}`}
+              onClick={() => (menu.children ? toggleSubMenu(menu.title) : handleMenuClick(menu.path))}
+            >
+              <span className="nav-link text-white d-flex align-items-center">
+                <span className="me-2">{menu.icon}</span>
+                {!isCollapsed && <span>{menu.title}</span>}
+                {menu.children && !isCollapsed && (
+                  <span className="ms-auto">{expandedMenu === menu.title ? "-" : "+"}</span>
+                )}
+              </span>
+            </div>
+            {menu.children && expandedMenu === menu.title && (
+              <ul className="nav flex-column ps-3">
+                {menu.children.map((child, childIndex) => (
+                  <li
+                    key={childIndex}
+                    className="nav-item"
+                    onClick={() => handleMenuClick(child.path)}
+                  >
+                    <span className="nav-link text-white">{child.title}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
-      <div className="mt-auto d-flex justify-content-start">
-        <button
-          onClick={handleLogout}
-          className="btn btn-danger"
-          style={{ position: "absolute", bottom: "20px", left: "20px" }}
-        >
+      <div className="mt-auto">
+        <button onClick={handleLogout} className="btn btn-danger">
           Logout
         </button>
       </div>
