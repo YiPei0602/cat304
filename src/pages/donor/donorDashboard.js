@@ -1,5 +1,5 @@
 // donor dashboard
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { db } from '../../firebase';
@@ -167,6 +167,12 @@ const DonorDashboard = () => {
                             <p className="text-gray-600">Top Donated Category</p>
                             <p className="text-3xl font-bold">{metrics.topCategory}</p>
                         </div>
+                        <Link 
+                            to="/donor/history"
+                            className="absolute top-6 right-6 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                        >
+                            View Full History
+                        </Link>
                     </div>
 
                     {/* Recent Donations Table */}
@@ -176,11 +182,11 @@ const DonorDashboard = () => {
                             <table className="w-full">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item Type</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Date</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Category</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Item Type</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
@@ -207,17 +213,31 @@ const DonorDashboard = () => {
                     </div>
 
                     {/* Donation Categories */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {categories.map((category, index) => (
-                            <div 
-                                key={category.name}
-                                className="bg-white p-6 rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow"
-                                onClick={() => handleCategoryClick(category)}
-                            >
-                                <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
-                                <p className="text-gray-600">{category.description}</p>
-                            </div>
-                        ))}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 col-span-full">
+                            {categories.slice(0, 3).map((category) => (
+                                <div 
+                                    key={category.name}
+                                    className="bg-white p-6 rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow w-full"
+                                    onClick={() => handleCategoryClick(category)}
+                                >
+                                    <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
+                                    <p className="text-gray-600">{category.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 col-span-full md:w-2/3">
+                            {categories.slice(3).map((category) => (
+                                <div 
+                                    key={category.name}
+                                    className="bg-white p-6 rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow w-full"
+                                    onClick={() => handleCategoryClick(category)}
+                                >
+                                    <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
+                                    <p className="text-gray-600">{category.description}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Donation Form Modal */}

@@ -21,7 +21,7 @@ const menuConfig = {
   ],
   donor: [
     { title: "Dashboard", path: "/donorDashboard"},
-    { title: "Transactions", path: "/transactions" },
+    { title: "Donation History", path: "/donor/history" },
     { title: "Notifications", path: "/notifications" },
     { title: "Settings", path: "/settings" },
   ],

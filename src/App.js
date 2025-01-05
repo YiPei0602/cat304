@@ -11,6 +11,7 @@ import StudentDashboard from './pages/Student/studentDashboard';
 import AdminDashboard from './pages/admin/adminDashboard';
 import DonorDashboard from './pages/donor/donorDashboard';
 import ItemList from './pages/Student/itemList';
+import DonationHistory from './pages/donor/DonationHistory';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/adminDashboard" element = {<AdminDashboard/>}/>
         <Route path="/donorDashboard" element = {<DonorDashboard/>}/>
         <Route path="/itemList" element ={<ItemList/>}/>
+        <Route path="/donor/history" element={<DonationHistory />} />
       </Routes>
     </Router>
     </>
