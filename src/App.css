@@ -74,9 +74,13 @@ body, html {
 }
 
 .dashboard-layout {
-  min-height: 100vh;
   display: flex;
-  width: 100%;
+  min-height: 100vh;
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow-x: hidden;
 }
 
 .user-role-container {
@@ -91,25 +95,67 @@ body, html {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+  flex-grow: 1;
+  margin-left: 250px;
+}
+
+.dashboard-layout .sidebar.collapsed + .dashboard-content {
+  margin-left: 80px; /* Offset for collapsed sidebar width */
 }
 
 .sidebar {
   width: 240px;
   background-color: #212529;
-  transition: width 0.3s;
+  transition: width 0.3s ease-in-out;
+  position: fixed;
 }
 
-/* .sidebar-collapsed {
-  width: 5rem;
+.sidebar .collapse-btn {
+  background-color:lightblue;
+  color:darkslategray;
+  border: none;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  /* transform: translateX(50%); */
+  display: flex;
+  width: 50px;
+  height: 50px;
+  font-size: 30px;
+  position: absolute;
+  top: 20px;
+  font-weight: bold;
+  /* left: 10px; */
+  cursor: pointer;
+  right: -25px;
 }
 
-.sidebar-expanded {
-  width: 280px;
-} */
+.sidebar h5 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.sidebar .collapse-btn:hover {
+  color: #ffffff;
+  background-color:darkgrey;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.sidebar.expanded {
+  width: 240px;
+}
 
 .sidebar .nav-link {
   color: #ffffff !important;
   opacity: 0.8;
+}
+
+.sidebar .nav-link span:first-child {
+  font-size: 22px; /* Adjust icon size */
 }
 
 .sidebar .nav-link:hover {
@@ -120,6 +166,26 @@ body, html {
 .sidebar .nav-link.active {
   background-color: rgba(255, 255, 255, 0.1);
   opacity: 1;
+}
+
+.sidebar.collapsed .nav-link {
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar.collapsed h5 {
+  font-size: 14px;
+}
+
+/* Adjustments when the sidebar is collapsed */
+.sidebar.collapsed .nav-link {
+  justify-content: center;
+}
+
+.sidebar.collapsed .nav-item {
+  text-align: center;
 }
 
 .toggle-btn {
