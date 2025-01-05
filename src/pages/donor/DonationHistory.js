@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
@@ -27,6 +27,14 @@ ChartJS.register(
     Legend
 );
 
+const categoryColors = {
+    'Food': '#28a745',
+    'School Supplies': '#007bff',
+    'Household Essentials': '#fd7e14',
+    'Personal Care Products': '#6f42c1',
+    'Others': '#20c997'
+};
+
 const DonationHistory = () => {
     const location = useLocation();
     const role = localStorage.getItem('userRole');
@@ -43,21 +51,9 @@ const DonationHistory = () => {
     });
     const [selectedDonation, setSelectedDonation] = useState(null);
 
-    const categoryColors = {
-        'Food': '#28a745',
-        'School Supplies': '#007bff',
-        'Household Essentials': '#fd7e14',
-        'Personal Care Products': '#6f42c1',
-        'Others': '#20c997'
-    };
-
     const userId = localStorage.getItem('userId');
 
-    useEffect(() => {
-        fetchDonations();
-    }, [userId]);
-
-    const fetchDonations = async () => {
+    const fetchDonations = useCallback(async () => {
         try {
             const donationsRef = collection(db, 'donations');
             const q = query(
@@ -77,16 +73,35 @@ const DonationHistory = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [userId]);
+
+    useEffect(() => {
+        fetchDonations();
+    }, [fetchDonations]);
 
     const filteredDonations = useMemo(() => {
         return donations.filter(donation => {
             const matchesCategory = !filters.category || donation.category === filters.category;
             const matchesItemType = !filters.itemType || donation.itemType === filters.itemType;
             const matchesStatus = !filters.status || donation.status === filters.status;
-            const matchesSearch = !filters.searchTerm || 
-                donation.category.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                donation.itemType?.toLowerCase().includes(filters.searchTerm.toLowerCase());
+            
+            // Enhanced search functionality
+            const searchTerm = filters.searchTerm.toLowerCase();
+            const matchesSearch = !searchTerm || 
+                // Category search
+                donation.category.toLowerCase().includes(searchTerm) ||
+                // Item type search
+                (donation.itemType?.toLowerCase() || '').includes(searchTerm) ||
+                // Description search (for Others category)
+                (donation.description?.toLowerCase() || '').includes(searchTerm) ||
+                // Quantity search
+                donation.numberOfItems?.toString().includes(searchTerm) ||
+                // Delivery method search
+                (donation.pickupNeeded ? 'pickup' : 'drop-off').includes(searchTerm) ||
+                // Location search
+                (donation.dropoffLocation?.toLowerCase() || '').includes(searchTerm) ||
+                // Status search
+                donation.status.toLowerCase().includes(searchTerm);
 
             let matchesDate = true;
             const donationDate = new Date(donation.date);
@@ -159,6 +174,21 @@ const DonationHistory = () => {
         });
     };
 
+    if (loading) {
+        return (
+            <div className="dashboard-layout">
+                <Sidebar userRole={role} />
+                <div className="dashboard-content">
+                    <div className="p-6">
+                        <div className="flex items-center justify-center h-screen">
+                            <div className="text-gray-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="dashboard-layout">
             <Sidebar userRole={role} />
@@ -169,13 +199,31 @@ const DonationHistory = () => {
                     {/* Filters */}
                     <div className="bg-white p-4 rounded-lg shadow mb-6">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <input
-                                type="text"
-                                placeholder="Search donations..."
-                                className="rounded-md border-gray-300"
-                                value={filters.searchTerm}
-                                onChange={(e) => setFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
-                            />
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search by category, item, quantity, delivery..."
+                                    className="rounded-md border-gray-300 w-full pl-10"
+                                    value={filters.searchTerm}
+                                    onChange={(e) => setFilters(prev => ({ 
+                                        ...prev, 
+                                        searchTerm: e.target.value 
+                                    }))}
+                                />
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg 
+                                        className="h-5 w-5 text-gray-400" 
+                                        viewBox="0 0 20 20" 
+                                        fill="currentColor"
+                                    >
+                                        <path 
+                                            fillRule="evenodd" 
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" 
+                                            clipRule="evenodd" 
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
                             <select
                                 value={filters.category}
                                 onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
@@ -240,31 +288,59 @@ const DonationHistory = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                {filteredDonations.map((donation) => (
-                                    <tr key={donation.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4">{formatDate(donation.date)}</td>
-                                        <td className="px-6 py-4">{donation.category}</td>
-                                        <td className="px-6 py-4">{donation.itemType}</td>
-                                        <td className="px-6 py-4">{donation.numberOfItems}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs ${
-                                                donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
-                                                donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
-                                                'bg-yellow-100 text-yellow-800'
-                                            }`}>
-                                                {donation.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <button
-                                                onClick={() => setSelectedDonation(donation)}
-                                                className="text-blue-600 hover:text-blue-900"
-                                            >
-                                                View Details
-                                            </button>
+                                {filteredDonations.length > 0 ? (
+                                    filteredDonations.map((donation) => (
+                                        <tr key={donation.id} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4">{formatDate(donation.date)}</td>
+                                            <td className="px-6 py-4">{donation.category}</td>
+                                            <td className="px-6 py-4">{donation.itemType}</td>
+                                            <td className="px-6 py-4">{donation.numberOfItems}</td>
+                                            <td className="px-6 py-4">
+                                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                                    donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
+                                                    donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
+                                                    'bg-yellow-100 text-yellow-800'
+                                                }`}>
+                                                    {donation.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    onClick={() => setSelectedDonation(donation)}
+                                                    className="text-blue-600 hover:text-blue-900"
+                                                >
+                                                    View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                                            <div className="flex flex-col items-center justify-center">
+                                                <svg 
+                                                    className="w-12 h-12 mb-4 text-gray-400" 
+                                                    fill="none" 
+                                                    stroke="currentColor" 
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path 
+                                                        strokeLinecap="round" 
+                                                        strokeLinejoin="round" 
+                                                        strokeWidth="2" 
+                                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" 
+                                                    />
+                                                </svg>
+                                                <p className="text-lg font-medium">No items found</p>
+                                                <p className="text-sm text-gray-400">
+                                                    {filters.searchTerm || filters.category || filters.status || filters.dateRange !== 'all' 
+                                                        ? 'Try adjusting your filters'
+                                                        : 'No donations have been made yet'}
+                                                </p>
+                                            </div>
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>

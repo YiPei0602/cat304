@@ -24,7 +24,7 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
         Food: ['Biscuit', 'Cup Noodles', 'Coffee'],
         'School Supplies': ['Reference Books', 'Textbooks', 'Stationery'],
         'Household Essentials': ['Broom', 'Hanger', 'Cloth'],
-        'Personal Care Products': ['Toothpaste', 'Toilet Paper', 'Sanitary Products'],
+        'Personal Care Products': ['Toothpaste', 'Toilet Paper', 'Sanitary Products', 'Towel'],
     };
 
     const schools = [
