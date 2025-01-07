@@ -275,49 +275,49 @@ const DonationHistory = () => {
                     </div>
 
                     {/* Move table before charts */}
-                    <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
-                        <div className="min-w-full">
-                            <div className="bg-gray-100">
-                                <div className="grid grid-cols-6 leading-none">
-                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase first:rounded-tl-lg">
+                    <div className="bg-white rounded-lg shadow mb-8">
+                        <table className="min-w-full">
+                            <thead>
+                                <tr className="bg-gray-100 rounded-t-lg">
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
                                         DATE
-                                    </div>
-                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
                                         CATEGORY
-                                    </div>
-                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
                                         ITEM TYPE
-                                    </div>
-                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
                                         QUANTITY
-                                    </div>
-                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
                                         STATUS
-                                    </div>
-                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase last:rounded-tr-lg">
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 last:rounded-tr-lg">
                                         ACTIONS
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="divide-y divide-gray-200">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
                                 {filteredDonations.map((donation) => (
-                                    <div 
+                                    <tr 
                                         key={donation.id} 
-                                        className="grid grid-cols-6 bg-white transition-colors duration-200 ease-in-out hover:bg-gray-100"
+                                        className="bg-white transition-colors duration-200 ease-in-out [&:hover]:!bg-gray-100"
                                     >
-                                        <div className="px-6 py-4 text-center">
+                                        <td className="px-6 py-4 text-center border-0">
                                             {formatDate(donation.date)}
-                                        </div>
-                                        <div className="px-6 py-4 text-center">
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
                                             {donation.category}
-                                        </div>
-                                        <div className="px-6 py-4 text-center">
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
                                             {donation.itemType}
-                                        </div>
-                                        <div className="px-6 py-4 text-center">
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
                                             {donation.numberOfItems}
-                                        </div>
-                                        <div className="px-6 py-4 text-center">
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
                                             <span className={`px-2 py-1 text-xs rounded ${
                                                 donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
                                                 donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
@@ -325,8 +325,8 @@ const DonationHistory = () => {
                                             }`}>
                                                 {donation.status}
                                             </span>
-                                        </div>
-                                        <div className="px-6 py-4 text-center">
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
                                             <a 
                                                 href="#" 
                                                 onClick={(e) => {
@@ -337,11 +337,11 @@ const DonationHistory = () => {
                                             >
                                                 View Details
                                             </a>
-                                        </div>
-                                    </div>
+                                        </td>
+                                    </tr>
                                 ))}
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
 
                     {/* Charts side by side using grid */}
