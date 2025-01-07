@@ -13,6 +13,7 @@ import ItemList from './pages/Student/itemList';
 import CollectionHistory from './pages/Student/collectionHistory';
 import DonorApplication from "./pages/Review/DonorApplication";
 import StudentApplication from './pages/Review/StudentApplication';
+import DonationHistory from './pages/donor/DonationHistory';
 
 function App() {
 
@@ -32,7 +33,8 @@ function App() {
         <Route path="/collectionHistory" element ={<CollectionHistory/>}/>
         <Route path="/student-application" element={<StudentApplication />} />
         <Route path="/donor-application" element={<DonorApplication />} />
-
+        <Route path="/donor/history" element={<DonationHistory />} />
+        
       </Routes>
     </Router>
     </>
