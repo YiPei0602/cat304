@@ -1,5 +1,5 @@
 // donor dashboard
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../../components/Sidebar';
 import app from '../../firebase';

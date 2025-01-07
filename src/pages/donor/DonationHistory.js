@@ -36,7 +36,7 @@ const categoryColors = {
 };
 
 const DonationHistory = () => {
-    const location = useLocation();
+    // const location = useLocation();
     const role = localStorage.getItem('userRole');
     const [donations, setDonations] = useState([]);
     const [loading, setLoading] = useState(true);

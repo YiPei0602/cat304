@@ -39,6 +39,7 @@ const Inventory = () =>{
         category: "",
         campus: "",
         expiry_date: "",
+        expiry_date_list: [],
         stock_level: "",
         low_threshold: "",
         high_threshold: "",
@@ -169,6 +170,27 @@ const Inventory = () =>{
         }
     };
 
+    const setCategory = (name) => {
+        // if (newItem.category === ""){
+            const selectedItem = items.find(item => item.item_name === name);
+            if (selectedItem) {
+                setNewItem((prevState) => ({
+                    ...prevState,
+                    item_name: selectedItem.item_name,
+                    category: selectedItem.category,
+                    unit: selectedItem.unit,
+                }));
+            } else {
+                setNewItem((prevState) => ({
+                    ...prevState,
+                    category: "",
+                    unit: "",
+                }));
+            // }
+        }
+    }
+    
+
     //Set stock level
     const setStockLevel = (quan, low, high) => {
         let stock_level = ""; 
@@ -196,6 +218,99 @@ const Inventory = () =>{
             newItem.quantity = Number(newItem.quantity);
             newItem.low_threshold = Number(newItem.low_threshold);
             newItem.high_threshold = Number(newItem.high_threshold);
+
+            if (newItem.category === "Food") {
+
+                const qfood1 = query(
+                    collection(db, "inventory"),
+                    where("item_name", "==", newItem.item_name),
+                    where("campus", "==", newItem.campus),
+                    where("category", "==", "Food")
+                  );
+
+                const qfood2 = query(
+                    collection(db, "inventory"),
+                    where("item_name", "==", newItem.item_name),
+                    where("campus", "!=", newItem.campus),
+                    where("category", "==", "Food")
+                )
+
+                const queryFood1 = await getDocs(qfood1);
+                const queryFood2 = await getDocs(qfood2);
+
+                // For same item in same campus
+                if (!queryFood1.empty) {
+                queryFood1.forEach(async (doc) => {
+                    const data = doc.data();
+
+                    console.log(data.expiry_date);
+                    console.log(newItem.expiry_date);
+
+                    const exist = data.expiry_date_list?.find(
+                        (detail) => detail.expiry_date === newItem.expiry_date
+                    );
+
+                    if (exist) {
+                        exist.stock += newItem.quantity;
+                    } else {
+                        data.expiry_date_list.push({
+                            expiry_date: newItem.expiry_date,
+                            stock: newItem.quantity
+                        })
+                    }
+
+                    const newQuantity = data.quantity + newItem.quantity;
+                    const stockLevel = setStockLevel(newQuantity, data.low_threshold, data.high_threshold);
+                    await updateDoc(doc.ref, {
+                        quantity: newQuantity,
+                        stock_level: stockLevel,
+                        expiry_date_list: data.expiry_date_list,
+                    });
+                    console.log("Updated data!");
+
+                });
+
+                // Handle case where item is not found in that campus
+                } else if(!queryFood2.empty) {
+                    const data = queryFood2.docs[0].data();
+
+                    const stockLevel = setStockLevel(newItem.quantity, data.low_threshold, data.high_threshold);
+                    await addDoc(collection(db, "inventory"), {
+                           ...newItem,
+                           low_threshold: data.low_threshold,  // Use existing low_threshold
+                           high_threshold: data.high_threshold, // Use existing high_threshold
+                           unit: data.unit,
+                           stock_level: stockLevel,
+                           expiry_date_list: [{
+                            expiry_date: newItem.expiry_date,
+                            stock: newItem.quantity
+                        }]
+                    });
+            
+                    console.log("New batch added successfully.");
+                }
+
+                //   const itemDoc = query2.docs[0];
+                //   const itemRef = doc(db, "inventory", itemDoc.id);
+  
+                //   const ref = await getDoc(itemRef);
+  
+                //   const data = ref.data();
+                  
+                //   // const data = itemDoc.data();
+                //   const stockLevel = setStockLevel(newItem.quantity, data.low_threshold, data.high_threshold);
+  
+                //   await addDoc(collection(db, "inventory"), {
+                //       ...newItem,
+                //       low_threshold: data.low_threshold,  // Use existing low_threshold
+                //       high_threshold: data.high_threshold, // Use existing high_threshold
+                //       unit: data.unit,
+                //       stock_level: stockLevel,
+                //   });
+  
+                //   console.log("Item updated2 successfully."); 
+
+            } else {
 
             //Check if item already exists in that campus
             const q1 = query(
@@ -259,6 +374,7 @@ const Inventory = () =>{
                     stock_level: stockLevel,
                 });
             }
+        }
 
             fetchInventory();
             setIsModalOpen(false); // Close modal after submission
@@ -282,23 +398,18 @@ const Inventory = () =>{
     // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setNewItem({ ...newItem, [name]: value });
+        // console.log(newItem);
+        // setNewItem((prevItem) => {
+        //     ...prevItem, [name]: value
+        //     // return updated;
+        // });
+        setNewItem((prevItem) => {
+            const updatedItem = { ...prevItem, [name]: value };
+            // console.log("Updated newItem:", updatedItem); // This prints the updated state
+            return updatedItem;
+        });
+        // console.log(newItem);
 
-        const selectedItem = items.find(item => item.item_name === e.target.value);
-        if (selectedItem) {
-            setNewItem({
-                ...newItem,
-                item_name: selectedItem.item_name,
-                category: selectedItem.category,
-                unit: selectedItem.unit,
-            });
-        } else {
-            setNewItem((prevState) => ({
-                ...prevState,
-                category: "",
-                unit: "",
-            }));
-        }
     };
 
     // Delete an item
@@ -433,6 +544,7 @@ const Inventory = () =>{
                                     value={newItem.item_name}                                       
                                     onChange={(e) => {
                                         handleChange(e);
+                                        setCategory(e.target.value);
                                       }}
                                     required
                                 >

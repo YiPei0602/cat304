@@ -9,7 +9,7 @@ import Sidebar from '../../components/Sidebar';
 const QRScanner = () => {
   const location = useLocation();
   const role = location.state?.role || localStorage.getItem('userRole');
-  const name = location.state?.name || localStorage.getItem('userName');
+  // const name = location.state?.name || localStorage.getItem('userName');
 
   const [scanResult, setScanResult] = useState(null);
 
