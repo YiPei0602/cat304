@@ -48,6 +48,7 @@
   width: 38px;
   height: 35px;
   border: none;
+  display: flex;
   background: #00B4CC;
   text-align: center;
   color: #fff;
@@ -55,6 +56,8 @@
   cursor: pointer;
   font-size: 20px;
   margin-left: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Filter button */
@@ -62,6 +65,9 @@
     width: 40px;
     height: 35px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: #a6acac;
     margin-left: 20px;
     border-radius: 10px;
