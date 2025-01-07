@@ -287,36 +287,47 @@
 } 
 
 .form-btn {
-  margin-top: 10px; 
+  margin-top: 5px; 
   display: flex; 
+  align-items: center;
+  justify-content: center;
   gap: 10px; 
 }
 
 .form-btn button {
-  padding: 10px 20px; /* Padding for button size */
-  font-size: 16px; /* Font size for button text */
-  border-radius: 4px; /* Rounded corners */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease; /* Smooth transition for background color */
-  border: none; /* Remove default border */
+  padding: 10px 20px;
+  font-size: 16px; 
+  border-radius: 4px;
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+  border: none; 
 }
 
 .form-btn button[type="submit"] {
-  background-color: #007BFF; /* Blue background */
-  color: white; /* White text */
+  background-color: #007BFF; 
+  color: white; 
 }
 
 .form-btn button[type="submit"]:hover {
-  background-color: #0056b3; /* Darker blue when hovered */
+  background-color: #0056b3; 
 }
 
 .form-btn button[type="button"] {
-  background-color: #6c757d; /* Gray background */
-  color: white; /* White text */
+  background-color: #6c757d; 
+  color: white; 
 }
 
 .form-btn button[type="button"]:hover {
-  background-color: #5a6268; /* Darker gray when hovered */
+  background-color: #5a6268; 
+}
+
+.form-btn button[type="create"] {
+  background-color: #28a745; 
+  color: white; 
+}
+
+.form-btn button[type="create"]:hover {
+  background-color: #218838;
 }
 
 /* Table */

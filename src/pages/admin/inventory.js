@@ -631,7 +631,9 @@ const Inventory = () =>{
                             </div>
                             </form>
                             <div className="form-btn">
-                                <button onClick={(e) => {
+                                <button 
+                                    type="submit"
+                                    onClick={(e) => {
                                     e.preventDefault();
                                     console.log("Submit add");
                                     handleAddItem();
@@ -645,9 +647,14 @@ const Inventory = () =>{
                                     Cancel
                                 </button>
                             </div>
-                            <div className="form-btn">
-                                <p>Item not found in list?</p>
+                            <br></br>
+                            <div className="form-btn"
+                                style={{
+                                    flexDirection: "column",
+                                }}>
+                                <p style={{fontWeight:'bold', marginBottom:"3px"}}>Item not found in list?</p>
                                 <button 
+                                    type='create'
                                     onClick={() => openCreateModal(true)}
                                 >Create New Item
                                 </button>
