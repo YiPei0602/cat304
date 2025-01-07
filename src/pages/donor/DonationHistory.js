@@ -1,6 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
+<<<<<<< HEAD
 import { db } from '../../firebase'; // Corrected db import
+=======
+import { db } from '../../firebase';
+>>>>>>> Jiajoo
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { Pie, Bar } from 'react-chartjs-2';
 import Sidebar from '../../components/Sidebar';
@@ -14,8 +18,13 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+<<<<<<< HEAD
 import DatePicker from 'react-datepicker'; // Ensure `react-datepicker` is installed
 import "react-datepicker/dist/react-datepicker.css"; // Ensure CSS import works
+=======
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+>>>>>>> Jiajoo
 
 ChartJS.register(
     ArcElement,

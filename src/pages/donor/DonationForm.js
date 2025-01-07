@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import { db } from '../../firebase'; // Ensure the named import for `db` is correct
+=======
+import { db } from '../../firebase';
+>>>>>>> Jiajoo
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
@@ -15,12 +19,19 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
         pickupNeeded: false,
         dropoffLocation: '',
         preferredDate: '',
+<<<<<<< HEAD
         preferredTime: '',
+=======
+        preferredTime: ''
+>>>>>>> Jiajoo
     });
 
     const [loading, setLoading] = useState(false);
 
+<<<<<<< HEAD
     // Item options and other dropdown lists
+=======
+>>>>>>> Jiajoo
     const itemOptions = {
         Food: ['Biscuit', 'Cup Noodles', 'Coffee'],
         'School Supplies': ['Reference Books', 'Textbooks', 'Stationery'],
@@ -31,16 +42,26 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
     const schools = [
         'School of Computer Science',
         'School of Management',
+<<<<<<< HEAD
         'School of Biology',
+=======
+        'School of Biology'
+>>>>>>> Jiajoo
     ];
 
     const dropoffLocations = [
         'Main Campus Reception',
         'Student Center',
+<<<<<<< HEAD
         'Library',
     ];
 
     // Submit handler
+=======
+        'Library'
+    ];
+
+>>>>>>> Jiajoo
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -52,7 +73,11 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                 donorId: localStorage.getItem('userId'),
                 status: 'Pending',
                 createdAt: serverTimestamp(),
+<<<<<<< HEAD
                 numberOfItems: parseInt(formData.numberOfItems) || 0,
+=======
+                numberOfItems: parseInt(formData.numberOfItems) || 0
+>>>>>>> Jiajoo
             };
 
             console.log('Submitting donation data:', donationData);
@@ -70,16 +95,25 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
         }
     };
 
+<<<<<<< HEAD
     // Handle form input changes
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
+=======
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+>>>>>>> Jiajoo
         }));
     };
 
     useEffect(() => {
+<<<<<<< HEAD
         console.log('Personal information from localStorage:', {
             email: localStorage.getItem('userEmail'),
             phone: localStorage.getItem('userPhone'),
@@ -87,6 +121,23 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
         });
     }, []);
 
+=======
+        console.log('localStorage values:', {
+            email: localStorage.getItem('userEmail'),
+            phone: localStorage.getItem('userPhone'),
+            name: localStorage.getItem('userName')
+        });
+    }, []);
+
+    useEffect(() => {
+        const phoneNumber = localStorage.getItem('userPhone');
+        console.log('Phone number from localStorage:', phoneNumber);
+        if (!phoneNumber) {
+            console.log('No phone number found in localStorage');
+        }
+    }, []);
+
+>>>>>>> Jiajoo
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -99,7 +150,11 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                     </div>
 
                     <form onSubmit={handleSubmit}>
+<<<<<<< HEAD
                         {/* Personal Information Section */}
+=======
+                        {/* Personal Information */}
+>>>>>>> Jiajoo
                         <div className="mb-6">
                             <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
                             <div className="grid grid-cols-1 gap-4">
@@ -136,7 +191,11 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                             </div>
                         </div>
 
+<<<<<<< HEAD
                         {/* Donation Details Section */}
+=======
+                        {/* Donation Details */}
+>>>>>>> Jiajoo
                         <div className="mb-6">
                             <h3 className="text-lg font-semibold mb-4">Donation Details</h3>
                             {category.name !== 'Others' && (
@@ -150,14 +209,21 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                                         required
                                     >
                                         <option value="">Select an item</option>
+<<<<<<< HEAD
                                         {itemOptions[category.name]?.map((item) => (
+=======
+                                        {itemOptions[category.name]?.map(item => (
+>>>>>>> Jiajoo
                                             <option key={item} value={item}>{item}</option>
                                         ))}
                                     </select>
                                 </div>
                             )}
 
+<<<<<<< HEAD
                             {/* Additional fields based on category */}
+=======
+>>>>>>> Jiajoo
                             {category.name === 'Food' && (
                                 <div className="mb-4">
                                     <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
@@ -183,7 +249,11 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                                         required
                                     >
                                         <option value="">Select a school</option>
+<<<<<<< HEAD
                                         {schools.map((school) => (
+=======
+                                        {schools.map(school => (
+>>>>>>> Jiajoo
                                             <option key={school} value={school}>{school}</option>
                                         ))}
                                     </select>
@@ -218,7 +288,11 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                             </div>
                         </div>
 
+<<<<<<< HEAD
                         {/* Delivery Method Section */}
+=======
+                        {/* Delivery Method */}
+>>>>>>> Jiajoo
                         <div className="mb-6">
                             <h3 className="text-lg font-semibold mb-4">Delivery Method</h3>
                             <div className="space-y-4">
@@ -246,7 +320,11 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                                             required
                                         >
                                             <option value="">Select a location</option>
+<<<<<<< HEAD
                                             {dropoffLocations.map((location) => (
+=======
+                                            {dropoffLocations.map(location => (
+>>>>>>> Jiajoo
                                                 <option key={location} value={location}>{location}</option>
                                             ))}
                                         </select>
@@ -303,4 +381,8 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
     );
 };
 
+<<<<<<< HEAD
 export default DonationForm;
+=======
+export default DonationForm; 
+>>>>>>> Jiajoo

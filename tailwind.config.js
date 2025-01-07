@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -10,3 +11,16 @@ module.exports = {
   ],
 } 
 
+=======
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
+} 
+>>>>>>> Jiajoo
