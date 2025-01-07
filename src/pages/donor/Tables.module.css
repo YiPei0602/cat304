@@ -1,0 +1,27 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableHeader {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tableHeaderCell {
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.tableCell {
+    padding: 1rem 1.5rem;
+    white-space: nowrap;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tableRow:hover {
+    background-color: #f9fafb;
+} 
