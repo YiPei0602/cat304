@@ -16,6 +16,7 @@ import {
 } from 'chart.js';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import styles from './DonationHistory.module.css';
 
 ChartJS.register(
     ArcElement,
@@ -36,7 +37,6 @@ const categoryColors = {
 };
 
 const DonationHistory = () => {
-    const location = useLocation();
     const role = localStorage.getItem('userRole');
     const [donations, setDonations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -141,7 +141,7 @@ const DonationHistory = () => {
                 borderWidth: 1
             }]
         };
-    }, [donations]);
+    }, [donations, categoryColors]);
 
     // Prepare data for bar chart
     const barChartData = useMemo(() => {
@@ -176,7 +176,7 @@ const DonationHistory = () => {
 
     if (loading) {
         return (
-            <div className="dashboard-layout">
+            <div className="dashboard-layout donation-history">
                 <Sidebar userRole={role} />
                 <div className="dashboard-content">
                     <div className="p-6">
@@ -190,7 +190,7 @@ const DonationHistory = () => {
     }
 
     return (
-        <div className="dashboard-layout">
+        <div className="dashboard-layout donation-history">
             <Sidebar userRole={role} />
             <div className="dashboard-content">
                 <div className="p-6">
@@ -304,10 +304,10 @@ const DonationHistory = () => {
                                                     {donation.status}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 text-center">
                                                 <button
                                                     onClick={() => setSelectedDonation(donation)}
-                                                    className="text-blue-600 hover:text-blue-900"
+                                                    className={styles.viewDetailsBtn}
                                                 >
                                                     View Details
                                                 </button>
