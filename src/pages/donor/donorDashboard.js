@@ -176,39 +176,50 @@ const DonorDashboard = () => {
                     </div>
 
                     {/* Recent Donations Table */}
-                    <div className="bg-white rounded-lg shadow mb-8">
-                        <h3 className="text-xl font-semibold p-6 border-b">Recent Donations</h3>
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Date</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Category</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Item Type</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
-                                    {recentDonations.map((donation) => (
-                                        <tr key={donation.id}>
-                                            <td className="px-6 py-4">{formatDate(donation.date)}</td>
-                                            <td className="px-6 py-4">{donation.category}</td>
-                                            <td className="px-6 py-4">{donation.itemType}</td>
-                                            <td className="px-6 py-4">{donation.numberOfItems}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                                    donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
-                                                    donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
-                                                    'bg-yellow-100 text-yellow-800'
-                                                }`}>
-                                                    {donation.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                    <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
+                        <div className="flex flex-col">
+                            <h3 className="text-xl font-semibold p-6 border-b leading-none m-0">Recent Donations</h3>
+                            <div className="bg-gray-100 border-t-0" style={{ marginTop: '-1px', borderTop: 'none' }}>
+                                <div className="grid grid-cols-5 leading-none">
+                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase first:rounded-tl-lg">
+                                        Date
+                                    </div>
+                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                        Category
+                                    </div>
+                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                        Item Type
+                                    </div>
+                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
+                                        Quantity
+                                    </div>
+                                    <div className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase last:rounded-tr-lg">
+                                        Status
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="divide-y divide-gray-200">
+                                {recentDonations.map((donation) => (
+                                    <div 
+                                        key={donation.id}
+                                        className="grid grid-cols-5 bg-white transition-colors duration-200 ease-in-out hover:bg-gray-100"
+                                    >
+                                        <div className="px-6 py-4 text-center">{formatDate(donation.date)}</div>
+                                        <div className="px-6 py-4 text-center">{donation.category}</div>
+                                        <div className="px-6 py-4 text-center">{donation.itemType}</div>
+                                        <div className="px-6 py-4 text-center">{donation.numberOfItems}</div>
+                                        <div className="px-6 py-4 text-center">
+                                            <span className={`px-2 py-1 rounded-full text-xs ${
+                                                donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
+                                                donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
+                                                'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                                {donation.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
