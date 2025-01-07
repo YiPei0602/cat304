@@ -16,7 +16,6 @@ import {
 } from 'chart.js';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import styles from './DonationHistory.module.css';
 
 ChartJS.register(
     ArcElement,
@@ -37,6 +36,7 @@ const categoryColors = {
 };
 
 const DonationHistory = () => {
+    const location = useLocation();
     const role = localStorage.getItem('userRole');
     const [donations, setDonations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -141,7 +141,7 @@ const DonationHistory = () => {
                 borderWidth: 1
             }]
         };
-    }, [donations, categoryColors]);
+    }, [donations]);
 
     // Prepare data for bar chart
     const barChartData = useMemo(() => {
@@ -176,7 +176,7 @@ const DonationHistory = () => {
 
     if (loading) {
         return (
-            <div className="dashboard-layout donation-history">
+            <div className="dashboard-layout">
                 <Sidebar userRole={role} />
                 <div className="dashboard-content">
                     <div className="p-6">
@@ -190,7 +190,7 @@ const DonationHistory = () => {
     }
 
     return (
-        <div className="dashboard-layout donation-history">
+        <div className="dashboard-layout">
             <Sidebar userRole={role} />
             <div className="dashboard-content">
                 <div className="p-6">
@@ -275,72 +275,63 @@ const DonationHistory = () => {
                     </div>
 
                     {/* Move table before charts */}
-                    <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
-                        <table className="min-w-full">
+                    <div className="bg-white rounded-lg overflow-hidden mb-6">
+                        <table className="min-w-full border-collapse [&_tr:nth-child(even)]:bg-white">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Category</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Item Type</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                        Date
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                        Category
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                        Item Type
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                        Quantity
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                        Status
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200">
-                                {filteredDonations.length > 0 ? (
-                                    filteredDonations.map((donation) => (
-                                        <tr key={donation.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4">{formatDate(donation.date)}</td>
-                                            <td className="px-6 py-4">{donation.category}</td>
-                                            <td className="px-6 py-4">{donation.itemType}</td>
-                                            <td className="px-6 py-4">{donation.numberOfItems}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                                    donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
-                                                    donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
-                                                    'bg-yellow-100 text-yellow-800'
-                                                }`}>
-                                                    {donation.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <button
-                                                    onClick={() => setSelectedDonation(donation)}
-                                                    className={styles.viewDetailsBtn}
-                                                >
-                                                    View Details
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                                            <div className="flex flex-col items-center justify-center">
-                                                <svg 
-                                                    className="w-12 h-12 mb-4 text-gray-400" 
-                                                    fill="none" 
-                                                    stroke="currentColor" 
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path 
-                                                        strokeLinecap="round" 
-                                                        strokeLinejoin="round" 
-                                                        strokeWidth="2" 
-                                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" 
-                                                    />
-                                                </svg>
-                                                <p className="text-lg font-medium">No items found</p>
-                                                <p className="text-sm text-gray-400">
-                                                    {filters.searchTerm || filters.category || filters.status || filters.dateRange !== 'all' 
-                                                        ? 'Try adjusting your filters'
-                                                        : 'No donations have been made yet'}
-                                                </p>
-                                            </div>
+                            <tbody className="[&_tr]:bg-white">
+                                {filteredDonations.map((donation) => (
+                                    <tr 
+                                        key={donation.id} 
+                                        className="bg-white hover:bg-gray-50 transition-all duration-150 ease-in-out [&:nth-child(even)]:!bg-white"
+                                    >
+                                        <td className="px-6 py-4 text-center border-0">{formatDate(donation.date)}</td>
+                                        <td className="px-6 py-4 text-center border-0">{donation.category}</td>
+                                        <td className="px-6 py-4 text-center border-0">{donation.itemType}</td>
+                                        <td className="px-6 py-4 text-center border-0">{donation.numberOfItems}</td>
+                                        <td className="px-6 py-4 text-center border-0">
+                                            <span className={`px-2 py-1 text-xs rounded ${
+                                                donation.status === 'Successful' ? 'bg-green-100 text-green-800' :
+                                                donation.status === 'Unsuccessful' ? 'bg-red-100 text-red-800' :
+                                                'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                                {donation.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
+                                            <a 
+                                                href="#" 
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setSelectedDonation(donation);
+                                                }}
+                                                className="text-blue-600 hover:text-blue-900"
+                                            >
+                                                View Details
+                                            </a>
                                         </td>
                                     </tr>
-                                )}
+                                ))}
                             </tbody>
                         </table>
                     </div>
