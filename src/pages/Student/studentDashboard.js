@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -133,29 +132,3 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
-=======
-//student dashboard 
-import { useLocation } from "react-router-dom";
-import Sidebar from '../../components/Sidebar';
-
-const StudentDashboard = () => {
-    const location = useLocation();
-    const role = location.state?.role || localStorage.getItem('userRole');
-    const name = location.state?.name || localStorage.getItem('userName');
-
-    return (
-        <div className="dashboard-layout">
-            <Sidebar userRole={role} />
-            <div className="dashboard-content">
-                <div className="container">
-                    <h1>Dashboard</h1>
-                    <h2>Welcome, {name}</h2>
-                    <p>Your role is {role}</p>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default StudentDashboard;
->>>>>>> Jiajoo
