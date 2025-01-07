@@ -9,6 +9,7 @@ import StudentDashboard from './pages/Student/studentDashboard';
 import AdminDashboard from './pages/admin/adminDashboard';
 import Inventory from './pages/admin/inventory';
 import QRScanner from './pages/admin/QRScanner';
+import Notifications from './pages/admin/notifications';
 import DonorDashboard from './pages/donor/donorDashboard';
 import ItemList from './pages/Student/itemList';
 import DonationHistory from './pages/donor/DonationHistory';
@@ -32,6 +33,7 @@ function App() {
         <Route path="/itemList" element ={<ItemList/>}/>
         <Route path="/inventory" element ={<Inventory/>}/>
         <Route path="/qrscanner" element ={<QRScanner/>}/>
+        <Route path="/notifications" element ={<Notifications />}/>
         <Route path="/donor/history" element={<DonationHistory />} />
         <Route path="/collectionHistory" element ={<CollectionHistory/>}/>
         <Route path="/student-application" element={<StudentApplication />} />

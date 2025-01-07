@@ -288,6 +288,16 @@ const Inventory = () =>{
                     });
             
                     console.log("New batch added successfully.");
+                } else {
+                    const stockLevel = setStockLevel(newItem.quantity, newItem.low_threshold, newItem.high_threshold);
+                    await addDoc(collection(db, "inventory"), {
+                        ...newItem,
+                        stock_level: stockLevel,
+                        expiry_date_list: [{
+                            expiry_date: newItem.expiry_date,
+                            stock: newItem.quantity
+                        }]
+                    });
                 }
 
                 //   const itemDoc = query2.docs[0];
@@ -667,13 +677,20 @@ const Inventory = () =>{
                             </div>
                             <div className="label">
                                 <label>Category:</label>
-                                <input
-                                    type="text"
+                                <select
                                     name="category"
-                                    value={newItem.category}
-                                    onChange={handleChange}
+                                    value={newItem.category}                                       
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                      }}
                                     required
-                                />
+                                >
+                                    <option value="">Select</option>
+                                    <option value="Food">Food</option>
+                                    <option value="Stationary">Stationary</option>
+                                    <option value="Hygiene Products">Hygiene Products</option>
+                                    <option value="School Supplies">School Supplies</option>
+                                </select>
                             </div>
                             <div className="label">
                                 <label>Campus:</label>
