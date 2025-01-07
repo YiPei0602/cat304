@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar';
-import './DonorApplication.css';
+import './StudentApplication.css';
 
-function DonorApplication() {
+function StudentApplication() {
   const [applications, setApplications] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com', donation: '$100', date: '2024-12-26', status: 'Pending' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', donation: '$200', date: '2024-12-25', status: 'Approved' },
-    { id: 3, name: 'Sam Wilson', email: 'sam@example.com', donation: '$50', date: '2024-12-24', status: 'Rejected' },
+    { id: 1, name: 'John Doe', email: 'john@example.com', school: 'School A', date: '2024-12-26', status: 'Pending' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', school: 'School B', date: '2024-12-25', status: 'Approved' },
+    { id: 3, name: 'Sam Wilson', email: 'sam@example.com', school: 'School C', date: '2024-12-24', status: 'Rejected' },
   ]);
 
   const [filter, setFilter] = useState('All'); // Default filter to show all applications
@@ -30,7 +30,7 @@ function DonorApplication() {
     <div className="dashboard-layout">
       <Sidebar userRole="admin" /> {/* Include Sidebar */}
       <div className="dashboard-content">
-        <h1>Donor Application Dashboard</h1>
+        <h1>Student Donation Application Dashboard</h1>
 
         {/* Stats Cards in 2x2 Grid */}
         <div className="stats-grid">
@@ -60,7 +60,7 @@ function DonorApplication() {
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
-                <th scope="col">Donation</th>
+                <th scope="col">School</th>
                 <th scope="col">Date</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -71,7 +71,7 @@ function DonorApplication() {
                 <tr key={app.id}>
                   <td>{app.name}</td>
                   <td>{app.email}</td>
-                  <td>{app.donation}</td>
+                  <td>{app.school}</td>
                   <td>{app.date}</td>
                   <td className={`status ${app.status.toLowerCase()}`}>{app.status}</td>
                   <td>
@@ -114,4 +114,5 @@ function DonorApplication() {
   );
 }
 
-export default DonorApplication;
+export default StudentApplication;
+

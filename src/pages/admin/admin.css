@@ -1,0 +1,372 @@
+/* Inventory */
+.dashboard-layout {
+    min-height: 100vh;
+    display: flex;
+    width: 100%;
+  }
+
+.dashboard-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+/* Row */
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px;
+}
+
+/* Search box */
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+.search-bar {
+  width: max-content;
+  display: flex;
+  font-family: 'Open Sans', sans-serif;
+  padding: 6px 15px;
+}
+
+.input-search {
+  width: max-content;
+  border: 1px solid #737373;
+  padding: 15px;
+  height: 35px;
+  border-radius: 35px;
+  outline: none;
+  color: #9DBFAF;
+  /* width: 250px; */
+}
+
+.input-search:focus{
+  color: #565656;
+}
+
+.search-btn {
+  width: 38px;
+  height: 35px;
+  border: none;
+  background: #00B4CC;
+  text-align: center;
+  color: #fff;
+  border-radius: 35px;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+/* Filter button */
+.filter-btn {
+    width: 40px;
+    height: 35px;
+    text-align: center;
+    background: #a6acac;
+    margin-left: 20px;
+    border-radius: 10px;
+    border: 1px solid #737373;
+    cursor: pointer;
+}
+
+/* Filter Modal */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  width: fit-content;
+}
+
+.filter-section {
+  min-width: 190px;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  flex: 1;
+  background-color: #f9f9f9;
+
+}
+
+.filter-section h4 {
+  font-size: 18px; /* Font size for the title */
+  font-weight: bold; /* Bold title */
+  color: #333; /* Dark color for the title */
+  margin-bottom: 10px; /* Space below the title */
+}
+
+.filter-section label {
+  display: flex; /* Flexbox to align checkbox and text */
+  align-items: center; /* Center align items vertically */
+  font-size: 16px; /* Font size for the text */
+  margin-bottom: 8px; /* Space between each label */
+  color: #333; /* Dark color for the text */
+}
+
+/* Checkbox */
+.checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.checkbox input {
+  margin-right: 8px; /* Space between checkbox and label */
+  transform: scale(1.2);  /* Make checkbox slightly larger */
+}
+
+.checkbox:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.apply-filters {
+  background-color: #007bff; /* Blue background color */
+  color: white; /* White text color */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 20px; /* Padding inside the button */
+  font-size: 16px; /* Font size for the text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  margin-right: 10px; /* Space between buttons */
+}
+
+.apply-filters:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Style for the Close button */
+.close-btn {
+  background-color: #f8f9fa; /* Light background color */
+  color: #333; /* Dark text color */
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 20px; /* Padding inside the button */
+  font-size: 16px; /* Font size for the text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transition for background and border */
+}
+
+/* Hover effect for the Close button */
+.close-btn:hover {
+  background-color: #e2e6ea; /* Slightly darker background on hover */
+  border-color: #ccc; /* Darker border on hover */
+}
+
+/* Add button */
+.add-btn {
+  appearance: none;
+  background-color: #2ea44f;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 15px;
+  max-width: fit-content;
+  height: 35px;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.add-btn:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.add-btn:hover {
+  background-color: #2c974b;
+}
+
+.add-btn:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+}
+
+.add-btn:active {
+  background-color: #298e46;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+
+/* Model */
+.model {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 8px;
+}
+
+.model-bck {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.label {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label label {
+  display: block;
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.label input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.label input:focus {
+  border-color: #007BFF;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.label select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.label select:focus {
+  border-color: #007BFF;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.option {
+  padding: 8px;
+  width: 100%;
+  background-color: #fff;
+  color: #333;
+}
+
+.option:hover {
+  /* background-color: #f1f1f1;  */
+  box-shadow: #9ce7f3;
+  /* box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  */
+} 
+
+.form-btn {
+  margin-top: 10px; 
+  display: flex; 
+  gap: 10px; 
+}
+
+.form-btn button {
+  padding: 10px 20px; /* Padding for button size */
+  font-size: 16px; /* Font size for button text */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  border: none; /* Remove default border */
+}
+
+.form-btn button[type="submit"] {
+  background-color: #007BFF; /* Blue background */
+  color: white; /* White text */
+}
+
+.form-btn button[type="submit"]:hover {
+  background-color: #0056b3; /* Darker blue when hovered */
+}
+
+.form-btn button[type="button"] {
+  background-color: #6c757d; /* Gray background */
+  color: white; /* White text */
+}
+
+.form-btn button[type="button"]:hover {
+  background-color: #5a6268; /* Darker gray when hovered */
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+  
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+  
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+  
+tr:hover {
+    background-color: #f1f1f1;
+}
+  
+td button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+  
+td button:first-child {
+    background-color: #2196f3;
+    color: white;
+}
+  
+td button:first-child:hover {
+    background-color: #1976d2;
+}
+  
+td button:last-child {
+    background-color: #f44336;
+    color: white;
+}
+  
+td button:last-child:hover {
+    background-color: #d32f2f;
+}
