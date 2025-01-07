@@ -77,7 +77,7 @@ const AdminDashboard = () =>{
 
     const fetchBarData = useCallback(async () => {
         try{
-            const accessRef = collection(db, 'access');
+            const accessRef = collection(db, 'collectionHistory');
             const q = query(accessRef, where('status', '==', "Collected"));
             const querySnapshot = await getDocs(q);
 
@@ -150,8 +150,10 @@ const AdminDashboard = () =>{
                             <p className="text-gray-600">Total Number of Success Donation</p>
                             <p className="text-3xl font-bold">{metrics.donationNum}</p>
                         </div>
+                    </div>
 
-                        <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div className="bg-white p-6 rounded-lg shadow">
                             <h2>Monthly Access Trend</h2>
                             <Bar
                                 data={chartData}
@@ -167,22 +169,21 @@ const AdminDashboard = () =>{
                                         x: {
                                             title: {
                                                 display: true,
-                                                text: "Year-Month",
+                                                text: "Month",
                                             },
                                         },
                                         y: {
                                             title: {
                                                 display: true,
-                                                text: "Total Access",
+                                                text: "Total Number of Student Access",
                                             },
                                             beginAtZero: true,
                                         },
                                     },
                                 }}
                             />
-                        </div>                       
-
-                    </div>
+                        </div>
+                    </div>         
 
                 </div>
             </div>

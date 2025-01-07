@@ -7,12 +7,13 @@ import app from "../firebase";
 import { FaHome, FaHistory, FaTasks } from "react-icons/fa"; // Add FaTasks
 import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
+import { IoMdQrScanner } from "react-icons/io";
 
 const menuConfig = {
   admin: [
     { title: "Dashboard", path: "/adminDashboard", icon: <FaHome /> },
     { title: "Inventory", path: "/inventory", icon: <MdInventory /> },
-    { title: "QR Scanner", path: "/qrscanner", icon: <MdInventory /> },
+    { title: "QR Scanner", path: "/qrscanner", icon: <IoMdQrScanner /> },
     { title: "Reports", path: "/reports" },
     {
       title: "Review Application",
