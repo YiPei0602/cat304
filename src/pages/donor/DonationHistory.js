@@ -157,11 +157,11 @@ const DonationHistory = () => {
             datasets: [{
                 label: 'Number of Donations',
                 data: Object.values(monthlyDonations).slice(-12),
-                backgroundColor: '#007bff',
-                borderColor: '#0056b3',
+                backgroundColor: '#7dc9ff',
+                borderColor: '#68a8f1',
                 borderWidth: 1,
                 borderRadius: 5,
-                hoverBackgroundColor: '#0056b3'
+                hoverBackgroundColor: '#68a8f1'
             }]
         };
     }, [donations]);
