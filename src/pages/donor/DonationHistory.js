@@ -28,11 +28,11 @@ ChartJS.register(
 );
 
 const categoryColors = {
-    'Food': '#28a745',
-    'School Supplies': '#007bff',
-    'Household Essentials': '#fd7e14',
-    'Personal Care Products': '#6f42c1',
-    'Others': '#20c997'
+    'Food': '#fd7979',
+    'School Supplies': '#ffa77f',
+    'Household Essentials': '#ffcc8f',
+    'Personal Care Products': '#7dc9ff',
+    'Others': '#68a8f1'
 };
 
 const DonationHistory = () => {
