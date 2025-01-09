@@ -4,6 +4,13 @@ import Sidebar from '../../components/Sidebar';
 import { collection, doc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase';
 
+const formatDate = (date) => {
+  if (!date) return 'N/A';
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(date).toLocaleDateString('en-US', options).replace(',', ',');
+};
+
+
 function DonorApplication() {
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('All');
@@ -129,48 +136,50 @@ function DonorApplication() {
                   <TableCell value={app.name} />
                   <TableCell value={app.email} />
                   <TableCell value={app.category} />
-                  <TableCell value={app.date} />
+                  <TableCell value={formatDate(app.date)} />
                   <td className="px-6 py-4 text-center border-0">
                   <button
-  className="px-4 py-2 text-sm font-medium bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300"
+  className="px-4 py-2 text-sm font-medium !bg-purple-500 text-white rounded-md hover:!bg-purple-600 transition duration-300"
   onClick={() => setSelectedApplication(app)}
 >
   View Details
 </button>
-
                   </td>
                   <td className="px-6 py-4 text-center border-0">
-                    <span
-                      className={`px-2 py-1 text-xs rounded ${
-                        app.status === 'Pending'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : app.status === 'Successful'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {app.status}
-                    </span>
+                    
+                  <span
+  className={`px-2 py-1 text-xs rounded ${
+    app.status === 'Pending'
+      ? 'bg-yellow-100 text-yellow-800'
+      : app.status === 'Successful'
+      ? 'bg-green-100 text-green-800'
+      : app.status === 'Unsuccessful'
+      ? 'bg-red-100 text-red-800'
+      : 'bg-gray-100 text-gray-800' // Default for unexpected statuses
+  }`}
+>
+  {app.status}
+</span>
+
                   </td>
                   <td className="px-6 py-4 text-center border-0 flex justify-center gap-2">
-  {app.status === 'Pending' && (
-    <>
-      <button
-        className="px-4 py-2 text-sm font-medium bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
-        onClick={() => handleStatusChange(app.id, 'Successful')}
-      >
-        Approve
-      </button>
-      <button
-        className="px-4 py-2 text-sm font-medium bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
-        onClick={() => handleStatusChange(app.id, 'Unsuccessful')}
-      >
-        Reject
-      </button>
-    </>
-  )}
-</td>
-
+                    {app.status === 'Pending' && (
+                      <>
+                        <button
+                          className="px-4 py-2 text-sm font-medium bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+                          onClick={() => handleStatusChange(app.id, 'Approved')}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="px-4 py-2 text-sm font-medium bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+                          onClick={() => handleStatusChange(app.id, 'Rejected')}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -232,27 +241,70 @@ const ApplicationDetailsModal = ({ application, onClose }) => (
           </button>
         </div>
         <div className="space-y-4">
+          {/* Basic Information */}
           <div>
-            <h3 className="text-lg font-semibold mb-2">Personal Information</h3>
-            <p><strong>Name:</strong> {application.name}</p>
-            <p><strong>Email:</strong> {application.email}</p>
-            <p><strong>Phone:</strong> {application.phone || 'N/A'}</p>
+            <h3 className="text-lg font-semibold mb-2">Basic Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Date</p>
+                <p>{formatDate(application.date)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Status</p>
+                <p>{application.status}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Category</p>
+                <p>{application.category}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Item Type</p>
+                <p>{application.itemType}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Quantity</p>
+                <p>{application.numberOfItems}</p>
+              </div>
+            </div>
           </div>
+
+          {/* Delivery Information */}
           <div>
-            <h3 className="text-lg font-semibold mb-2">Donation Details</h3>
-            <p><strong>Category:</strong> {application.category}</p>
-            <p><strong>Item Type:</strong> {application.itemType}</p>
-            <p><strong>Number of Items:</strong> {application.numberOfItems}</p>
+            <h3 className="text-lg font-semibold mb-2">Delivery Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Delivery Method</p>
+                <p>{application.pickupNeeded ? 'Pickup' : 'Drop-off'}</p>
+              </div>
+              {!application.pickupNeeded && (
+                <div>
+                  <p className="text-sm text-gray-500">Drop-off Location</p>
+                  <p>{application.dropoffLocation || 'N/A'}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-sm text-gray-500">Preferred Date</p>
+                <p>{formatDate(application.preferredDate)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Preferred Time</p>
+                <p>{application.preferredTime || 'N/A'}</p>
+              </div>
+            </div>
           </div>
-          {application.pickupNeeded ? (
-            <p><strong>Pickup Required</strong></p>
-          ) : (
-            <p><strong>Drop-off Location:</strong> {application.dropoffLocation}</p>
+
+          {/* Additional Information */}
+          {application.description && (
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Additional Information</h3>
+              <p>{application.description}</p>
+            </div>
           )}
         </div>
       </div>
     </div>
   </div>
 );
+
 
 export default DonorApplication;
