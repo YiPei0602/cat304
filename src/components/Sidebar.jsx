@@ -8,6 +8,7 @@ import { FaHome, FaHistory, FaTasks } from "react-icons/fa"; // Add FaTasks
 import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 import { IoMdQrScanner } from "react-icons/io";
+import { TbBulb } from "react-icons/tb";
 
 const menuConfig = {
   admin: [
@@ -41,6 +42,7 @@ const menuConfig = {
     { title: "Donation History", path: "/donor/history", icon: <FaHistory /> },
     { title: "Notifications", path: "/notifications", icon: <IoMdNotifications/> },
     { title: "Track Status", path: "/trackStatus" },
+    { title: "Donation Suggestion", path: "/suggestion", icon: < TbBulb/> },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings/>  },
   ],
 };

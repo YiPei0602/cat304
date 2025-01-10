@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 import Sidebar from '../../components/Sidebar';
-import { getDoc, getFirestore } from 'firebase/firestore';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from "firebase/firestore";
+import { getFirestore } from 'firebase/firestore';
+import { collection, getDocs, query, where } from "firebase/firestore";
 import app from '../../firebase';
 import "./admin.css";
 
 const Notifications = () => {
     const location = useLocation();
     const role = location.state?.role || localStorage.getItem('userRole');
-    const name = location.state?.name || localStorage.getItem('userName');
+    // const name = location.state?.name || localStorage.getItem('userName');
 
     //Database
     const db = getFirestore(app);
@@ -66,7 +66,7 @@ const Notifications = () => {
 
             const expiryCheck = querySnapshot.docs.map(doc => {
                 const data = doc.data();
-                const itemId = doc.id;
+                // const itemId = doc.id;
                 const expiryDateList = data.expiry_date_list || []; // Default to empty array if no expiry date list
 
                 // Get today's date

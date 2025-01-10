@@ -16,6 +16,8 @@ import DonationHistory from './pages/donor/DonationHistory';
 import CollectionHistory from './pages/Student/collectionHistory';
 import DonorApplication from "./pages/Review/DonorApplication";
 import StudentApplication from './pages/Review/StudentApplication';
+import Suggestion from './pages/donor/Suggestion';
+import Settings from './pages/admin/Settings';
 
 function App() {
 
@@ -38,7 +40,8 @@ function App() {
         <Route path="/collectionHistory" element ={<CollectionHistory/>}/>
         <Route path="/student-application" element={<StudentApplication />} />
         <Route path="/donor-application" element={<DonorApplication />} />
-
+        <Route path="/suggestion" element={<Suggestion />} />
+        <Route path='/settings' element={<Settings />} />
       </Routes>
     </Router>
     </>
