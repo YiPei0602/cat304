@@ -8,7 +8,9 @@ import {
   getDoc, 
   addDoc, 
   serverTimestamp,
-  onSnapshot
+  onSnapshot,
+  updateDoc,
+  where
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import Sidebar from './Sidebar';
@@ -21,11 +23,13 @@ function AdminChat() {
   const [newMessage, setNewMessage] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [debugInfo, setDebugInfo] = useState({});
-  const [userNames, setUserNames] = useState({}); // Store user names
+  const [userNames, setUserNames] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [chatListWidth, setChatListWidth] = useState(400); // Initial width
+  const [chatListWidth, setChatListWidth] = useState(400);
   const resizeRef = useRef(null);
   const isResizingRef = useRef(false);
+  const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   // Update filtered messages when messages or search query changes
   useEffect(() => {
@@ -252,6 +256,48 @@ function AdminChat() {
     };
   }, []);
 
+  // Scroll to bottom function
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Update chat selection for immediate response
+  const handleChatSelect = async (chat) => {
+    setSelectedChat(chat);
+    
+    // Immediately scroll to bottom before marking as read
+    requestAnimationFrame(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+    });
+    
+    try {
+      const messagesRef = collection(db, 'chats', chat.userId, 'messages');
+      const unreadQuery = query(
+        messagesRef,
+        where('isUser', '==', true),
+        where('read', '==', false)
+      );
+      
+      const unreadDocs = await getDocs(unreadQuery);
+      const updatePromises = unreadDocs.docs.map(doc => 
+        updateDoc(doc.ref, { read: true })
+      );
+      
+      await Promise.all(updatePromises);
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  };
+
+  // Add effect to handle scroll position when messages update
+  useEffect(() => {
+    if (selectedChat && chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [selectedChat?.messages]);
+
   return (
     <div className="flex flex-col h-screen">
       <Sidebar userRole="admin" />
@@ -288,7 +334,7 @@ function AdminChat() {
                   filteredMessages.map((chat) => (
                     <div
                       key={chat.userId}
-                      onClick={() => setSelectedChat(chat)}
+                      onClick={() => handleChatSelect(chat)}
                       className={`p-3 border-b cursor-pointer hover:bg-gray-50 text-left ${
                         selectedChat?.userId === chat.userId ? 'bg-blue-50' : ''
                       }`}
@@ -323,7 +369,10 @@ function AdminChat() {
                   </div>
 
                   {/* Messages */}
-                  <div className="flex-1 overflow-y-auto p-4 bg-gray-50 min-h-0">
+                  <div 
+                    ref={chatContainerRef}
+                    className="flex-1 overflow-y-auto p-4 bg-gray-50 min-h-0"
+                  >
                     {selectedChat.messages.map((message) => (
                       <div
                         key={message.id}
@@ -346,6 +395,7 @@ function AdminChat() {
                         </div>
                       </div>
                     ))}
+                    <div ref={messagesEndRef} />
                   </div>
 
                   {/* Input area */}
