@@ -22,7 +22,8 @@ const menuConfig = {
       ],
     },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
-    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
+    // { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
+    { title: "Donor Support", path: "/admin/chat", icon: <IoMdNotifications /> },
     { title: "System Logs", path: "/systemlogs" },
   ],
   student: [

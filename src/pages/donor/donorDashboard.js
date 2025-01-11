@@ -5,6 +5,8 @@ import Sidebar from '../../components/Sidebar';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import DonationForm from './DonationForm';
+import ChatButton from '../../components/ChatButton';
+import ChatDialog from '../../components/ChatDialog';
 
 const DonorDashboard = () => {
     const location = useLocation();
@@ -17,6 +19,7 @@ const DonorDashboard = () => {
     const [recentDonations, setRecentDonations] = useState([]);
     const [showDonationForm, setShowDonationForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     const role = location.state?.role || localStorage.getItem('userRole');
     const name = location.state?.name || localStorage.getItem('userName');
@@ -145,6 +148,10 @@ const DonorDashboard = () => {
         fetchRecentDonations();
     };
 
+    const toggleChat = () => {
+        setIsChatOpen(!isChatOpen);
+    };
+
     return (
         <div className="dashboard-layout">
             <Sidebar userRole={role} />
@@ -259,6 +266,15 @@ const DonorDashboard = () => {
                             onSubmitSuccess={handleDonationSuccess}
                         />
                     )}
+
+                    <ChatButton 
+                        onClick={toggleChat} 
+                        isOpen={isChatOpen}
+                    />
+                    <ChatDialog 
+                        isOpen={isChatOpen} 
+                        onClose={() => setIsChatOpen(false)} 
+                    />
                 </div>
             </div>
         </div>
