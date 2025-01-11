@@ -289,14 +289,14 @@ function AdminChat() {
                     <div
                       key={chat.userId}
                       onClick={() => setSelectedChat(chat)}
-                      className={`p-3 border-b cursor-pointer hover:bg-gray-50 ${
+                      className={`p-3 border-b cursor-pointer hover:bg-gray-50 text-left ${
                         selectedChat?.userId === chat.userId ? 'bg-blue-50' : ''
                       }`}
                     >
                       <div className="font-medium">
                         {chat.userName || `Donor ${chat.userId.slice(0, 8)}`}
                       </div>
-                      <div className="text-sm text-gray-500 truncate">
+                      <div className="text-sm text-gray-500 truncate text-left">
                         {chat.lastMessage?.text}
                       </div>
                     </div>

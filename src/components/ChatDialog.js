@@ -143,13 +143,13 @@ const ChatDialog = ({ isOpen, onClose }) => {
                 } mb-2`}
               >
                 <div
-                  className={`max-w-[80%] py-2 px-3 rounded-2xl ${
+                  className={`max-w-[80%] py-2 px-3 rounded-2xl break-words ${
                     message.isUser && !message.text.startsWith("Navigate to the Donor Dashboard")
-                      ? 'bg-blue-500 text-white rounded-br-sm'
+                      ? 'bg-blue-500 text-white rounded-br-sm text-left'
                       : 'bg-white text-gray-800 rounded-bl-sm shadow-sm text-left'
                   }`}
                 >
-                  {message.text}
+                  <span className="whitespace-pre-wrap block">{message.text}</span>
                 </div>
               </div>
             ))}

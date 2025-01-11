@@ -7,6 +7,7 @@ import app from "../firebase";
 import { FaHome, FaHistory, FaTasks } from "react-icons/fa";
 import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
+import { BiSupport } from "react-icons/bi";
 
 const menuConfig = {
   admin: [
@@ -22,8 +23,8 @@ const menuConfig = {
       ],
     },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
-    // { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
-    { title: "Donor Support", path: "/admin/chat", icon: <IoMdNotifications /> },
+    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
+    { title: "Donor Support", path: "/admin/chat", icon: <BiSupport />},
     { title: "System Logs", path: "/systemlogs" },
   ],
   student: [
