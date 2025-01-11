@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 const UserRoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const navigate = useNavigate();
 
   const roles = [
     { id: 'student', label: 'Student', description: 'Click here to log in as a student.' },
@@ -49,13 +48,13 @@ const UserRoleSelection = () => {
 
   return (
     <div className="user-role-container">
-      <div
-        className="background-section"
-        style={{
+      <div 
+        className="background-section" 
+        style={{ 
           backgroundImage: `url(${backgroundImage})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center center',
-          backgroundSize: 'cover',
+          backgroundSize: 'cover'
         }}
       >
         <div className="overlay-text">

@@ -4,15 +4,18 @@ import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 
 // Icons
-import { FaHome, FaHistory, FaTasks } from "react-icons/fa";
+import { FaHome, FaHistory, FaTasks } from "react-icons/fa"; // Add FaTasks
 import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
+import { IoMdQrScanner } from "react-icons/io";
+import { TbBulb } from "react-icons/tb";
 import { BiSupport } from "react-icons/bi";
 
 const menuConfig = {
   admin: [
     { title: "Dashboard", path: "/adminDashboard", icon: <FaHome /> },
     { title: "Inventory", path: "/inventory", icon: <MdInventory /> },
+    { title: "QR Scanner", path: "/qrscanner", icon: <IoMdQrScanner /> },
     { title: "Reports", path: "/reports" },
     {
       title: "Review Application",
@@ -27,20 +30,22 @@ const menuConfig = {
     { title: "Donor Support", path: "/admin/chat", icon: <BiSupport />},
     { title: "System Logs", path: "/systemlogs" },
   ],
+
   student: [
-    { title: "Dashboard", path: "/studentDashboard", icon: <FaHome /> },
-    { title: "Item List", path: "/itemlist", icon: <MdOutlineViewList /> },
+    { title: "Dashboard", path: "/studentDashboard", icon: <FaHome />},
+    { title: "Item List", path: "/itemlist" , icon: <MdOutlineViewList />},
     { title: "History", path: "/collectionHistory", icon: <FaHistory /> },
     { title: "Track Status", path: "/trackStatus" },
-    { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
-    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
+    { title: "Settings", path: "/settings", icon: <MdOutlineSettings/> },
+    { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/> },
   ],
   donor: [
-    { title: "Dashboard", path: "/donorDashboard", icon: <FaHome /> },
+    { title: "Dashboard", path: "/donorDashboard", icon: <FaHome />},
     { title: "Donation History", path: "/donor/history", icon: <FaHistory /> },
+    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications/> },
     { title: "Track Status", path: "/trackStatus" },
-    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
-    { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
+    { title: "Donation Suggestion", path: "/suggestion", icon: < TbBulb/> },
+    { title: "Settings", path: "/settings", icon: <MdOutlineSettings/>  },
   ],
 };
 
@@ -63,9 +68,7 @@ const Sidebar = ({ userRole }) => {
       try {
         const auth = getAuth(app);
         await signOut(auth);
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userId");
+        localStorage.clear();
         navigate("/login");
       } catch (error) {
         console.error("Logout error:", error);
@@ -112,12 +115,8 @@ const Sidebar = ({ userRole }) => {
           </li>
         ))}
       </ul>
-      <div className="mt-auto d-flex justify-content-start">
-        <button
-          onClick={handleLogout}
-          className="btn btn-danger"
-          style={{ position: "absolute", bottom: "20px", left: "20px" }}
-        >
+      <div className="mt-auto">
+        <button onClick={handleLogout} className="btn btn-danger">
           Logout
         </button>
       </div>
