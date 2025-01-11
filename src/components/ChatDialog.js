@@ -10,10 +10,15 @@ const FAQ_LIST = [
   {
     question: "What Items Can I Donate?",
     answer: "You can donate items in the following categories: Food, School Supplies, Household Essentials, Personal Care Products. If your donation does not fit these categories, you can select the Others category to proceed."
-
-    
   },
-  // Add other FAQ items here
+  {
+    question: "How To Track My Donation Status",
+    answer: "Visit the Donation History page. You will find detailed information about your donation. Check the Status column to track the progress of your donation."
+  },
+  {
+    question: "Where Can I Find My Past Donation Records?",
+    answer: "Visit the Donation History page and use the Search Bar or apply filters to find your records."
+  }
 ];
 
 const ChatDialog = ({ isOpen, onClose }) => {

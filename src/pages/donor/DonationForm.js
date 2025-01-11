@@ -3,6 +3,13 @@ import { db } from '../../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
+    console.log('Initial localStorage values:', {
+        userName: localStorage.getItem('userName'),
+        userEmail: localStorage.getItem('userEmail'),
+        userPhone: localStorage.getItem('userPhone'),
+        userId: localStorage.getItem('userId')
+    });
+
     const [formData, setFormData] = useState({
         name: localStorage.getItem('userName') || '',
         email: localStorage.getItem('userEmail') || '',
@@ -21,8 +28,8 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
     const [loading, setLoading] = useState(false);
 
     const itemOptions = {
-        Food: ['Biscuit', 'Cup Noodles', 'Coffee'],
-        'School Supplies': ['Reference Books', 'Textbooks', 'Stationery'],
+        Food: ['Biscuit', 'Bread', 'Canned Goods', 'Coffee Powder', 'Cup Noodles', 'Snacks'],
+        'School Supplies': ['Reference Books', 'Textbooks', 'Stationery', 'Eraser', 'Ruler'],
         'Household Essentials': ['Broom', 'Hanger', 'Cloth'],
         'Personal Care Products': ['Toothpaste', 'Toilet Paper', 'Sanitary Products', 'Towel'],
     };
@@ -78,9 +85,10 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
 
     useEffect(() => {
         console.log('localStorage values:', {
-            email: localStorage.getItem('userEmail'),
-            phone: localStorage.getItem('userPhone'),
-            name: localStorage.getItem('userName')
+            userId: localStorage.getItem('userId'),
+            userName: localStorage.getItem('userName'),
+            userEmail: localStorage.getItem('userEmail'),
+            userPhone: localStorage.getItem('userPhone')
         });
     }, []);
 
@@ -91,6 +99,26 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
             console.log('No phone number found in localStorage');
         }
     }, []);
+
+    useEffect(() => {
+        console.log('Form Data:', formData);
+        console.log('LocalStorage:', {
+            userName: localStorage.getItem('userName'),
+            userEmail: localStorage.getItem('userEmail'),
+            userPhone: localStorage.getItem('userPhone')
+        });
+    }, [formData]);
+
+    useEffect(() => {
+        console.log('Current formData:', formData);
+        if (!formData.name || !formData.email || !formData.phone) {
+            console.warn('Missing user data:', {
+                name: !formData.name,
+                email: !formData.email,
+                phone: !formData.phone
+            });
+        }
+    }, [formData]);
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -134,7 +162,7 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
                                         type="tel"
                                         name="phone"
                                         value={formData.phone}
-                                        onChange={handleChange}
+                                        readOnly
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                     />
                                 </div>
