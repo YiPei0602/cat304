@@ -70,6 +70,12 @@ const QRScanner = () => {
               }`}
             >
               <p className="font-bold">{scanResult.message}</p>
+              <button
+                className="ml-4 px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                onClick={() => setScanResult(null)}
+              >
+                Close
+              </button>
             </div>
           )}
         </div>
