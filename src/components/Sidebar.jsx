@@ -27,7 +27,7 @@ const menuConfig = {
     },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
     { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
-    { title: "Donor Support", path: "/admin/chat", icon: <BiSupport />},
+    { title: "User Support", path: "/admin/chat", icon: <BiSupport />},
     { title: "System Logs", path: "/systemlogs" },
   ],
 
@@ -35,9 +35,9 @@ const menuConfig = {
     { title: "Dashboard", path: "/studentDashboard", icon: <FaHome />},
     { title: "Item List", path: "/itemlist" , icon: <MdOutlineViewList />},
     { title: "History", path: "/collectionHistory", icon: <FaHistory /> },
-    { title: "Track Status", path: "/trackStatus" },
-    { title: "Settings", path: "/settings", icon: <MdOutlineSettings/> },
-    { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/> },
+    // { title: "Track Status", path: "/trackStatus" },
+    // { title: "Settings", path: "/settings", icon: <MdOutlineSettings/> },
+    // { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/> },
   ],
   donor: [
     { title: "Dashboard", path: "/donorDashboard", icon: <FaHome />},

@@ -2,26 +2,50 @@ import React, { useState, useRef, useEffect } from 'react';
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
-const FAQ_LIST = [
-  {
-    question: "How Can I Make a Donation?",
-    answer: "Navigate to the Donor Dashboard. Select your preferred donation category. A donation form will appear—choose the items you wish to donate, specify the quantity, and select your delivery method. Click the Submit Donation button to send your request. Your donation request will be reviewed, and you will need to wait for admin approval."
-  },
-  {
-    question: "What Items Can I Donate?",
-    answer: "You can donate items in the following categories: Food, School Supplies, Household Essentials, Personal Care Products. If your donation does not fit these categories, you can select the Others category to proceed."
-  },
-  {
-    question: "How To Track My Donation Status",
-    answer: "Visit the Donation History page. You will find detailed information about your donation. Check the Status column to track the progress of your donation."
-  },
-  {
-    question: "Where Can I Find My Past Donation Records?",
-    answer: "Visit the Donation History page and use the Search Bar or apply filters to find your records."
-  }
-];
+const FAQ_LISTS = {
+  donor: [
+    {
+      question: "How Can I Make a Donation?",
+      answer: "Navigate to the Donor Dashboard. Select your preferred donation category. A donation form will appear—choose the items you wish to donate, specify the quantity, and select your delivery method. Click the Submit Donation button to send your request. Your donation request will be reviewed, and you will need to wait for admin approval."
+    },
+    {
+      question: "What Items Can I Donate?",
+      answer: "You can donate items in the following categories: Food, School Supplies, Household Essentials, Personal Care Products. If your donation does not fit these categories, you can select the Others category to proceed."
+    },
+    {
+      question: "How To Track My Donation Status",
+      answer: "Visit the Donation History page. You will find detailed information about your donation. Check the Status column to track the progress of your donation."
+    },
+    {
+      question: "Where Can I Find My Past Donation Records?",
+      answer: "Visit the Donation History page and use the Search Bar or apply filters to find your records."
+    }
+  ],
+  recipient: [
+    {
+      question: "How Can I Collect Items?",
+      answer: "On the sidebar, navigate to the Item List. Browse available items by category, select the items you need, and specify the quantities. "
+    },
+    {
+      question: "What Items Are Available?",
+      answer: "Available items vary based on current donations and your campus location. Common categories include: Food, School Supplies, Household Essentials, and Personal Care Products. Check the Item List page for real-time inventory."
+    },
+    {
+      question: "How Do I Collect Item at the Collection Point?",
+      answer: "For items with the status 'Ready to Collect,' a 'Show QR' link will be displayed beside them. Click on the link to generate a QR code and show it to the person in charge. They will scan the code and hand you the item."
+    },
+    {
+      question: "How Can I Track My Collection?",
+      answer: "Visit the History page to view your collection history. Each items displays its current status and quantity you've collected."
+    },
+    {
+      question: "Can I request for items that are not in the item list?",
+      answer: "Yes, you can request the item through the request item feature. Click on the 'Click here to request' link to access the form."
+    }
+  ]
+};
 
-const ChatDialog = ({ isOpen, onClose }) => {
+const ChatDialog = ({ isOpen, onClose, userType = 'donor' }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -115,13 +139,20 @@ const ChatDialog = ({ isOpen, onClose }) => {
     });
   };
 
+  const currentFAQList = FAQ_LISTS[userType] || FAQ_LISTS.donor;
+
   return (
     <div className={`fixed bottom-32 right-6 w-[380px] bg-white rounded-3xl shadow-2xl ${
       isOpen ? 'block' : 'hidden'
     }`}>
       <div className="flex flex-col h-[550px]">
         <div className="shrink-0 flex justify-between items-center px-3 py-1.5 border-b rounded-t-3xl">
-          <h3 className="text-lg font-semibold text-gray-800">Chat with Admin</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Chat with Admin
+            <span className="text-sm font-normal text-gray-500 ml-2">
+              ({userType === 'donor' ? 'Donor Support' : 'Recipient Support'})
+            </span>
+          </h3>
           <button 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -142,14 +173,12 @@ const ChatDialog = ({ isOpen, onClose }) => {
               <div
                 key={message.id}
                 className={`flex ${
-                  message.isUser && !message.text.startsWith("Navigate to the Donor Dashboard") 
-                    ? 'justify-end' 
-                    : 'justify-start'
+                  message.isUser ? 'justify-end' : 'justify-start'
                 } mb-2`}
               >
                 <div
                   className={`max-w-[80%] py-2 px-3 rounded-2xl break-words ${
-                    message.isUser && !message.text.startsWith("Navigate to the Donor Dashboard")
+                    message.isUser
                       ? 'bg-blue-500 text-white rounded-br-sm text-left'
                       : 'bg-white text-gray-800 rounded-bl-sm shadow-sm text-left'
                   }`}
@@ -171,7 +200,9 @@ const ChatDialog = ({ isOpen, onClose }) => {
             {showFAQ && (
               <div className="bg-white rounded-xl p-2 shadow-sm mb-2">
                 <div className="flex justify-between items-center mb-2">
-                  <p className="text-gray-600 font-medium">Frequently Asked Questions:</p>
+                  <p className="text-gray-600 font-medium">
+                    Frequently Asked Questions:
+                  </p>
                   <button
                     onClick={() => setShowFAQ(false)}
                     className="text-gray-400 hover:text-gray-600 text-sm"
@@ -180,7 +211,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
                   </button>
                 </div>
                 <div className="space-y-1">
-                  {FAQ_LIST.map((faq, index) => (
+                  {currentFAQList.map((faq, index) => (
                     <button
                       key={index}
                       onClick={() => handleFAQSelect(faq)}
@@ -239,4 +270,4 @@ const ChatDialog = ({ isOpen, onClose }) => {
   );
 };
 
-export default ChatDialog; 
+export default ChatDialog;

@@ -23,135 +23,115 @@ function AdminChat() {
   const [newMessage, setNewMessage] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [debugInfo, setDebugInfo] = useState({});
-  const [userNames, setUserNames] = useState({});
+  const [userProfiles, setUserProfiles] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all'); 
   const [chatListWidth, setChatListWidth] = useState(400);
   const resizeRef = useRef(null);
   const isResizingRef = useRef(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
 
-  // Update filtered messages when messages or search query changes
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredMessages(messages);
-      return;
+    let filtered = messages;
+
+    filtered = filtered.filter(chat => chat.messages && chat.messages.length > 0);
+
+    // Apply role filter
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(chat => chat.userRole === activeFilter);
     }
 
-    const filtered = messages.filter((chat) => {
-      const userName = chat.userName?.toLowerCase() || '';
-      const searchTerm = searchQuery.toLowerCase();
-      
-      // Search in all messages of the chat
-      const messagesMatch = chat.messages?.some(message => 
-        message.text?.toLowerCase().includes(searchTerm)
-      );
-      
-      // Search in username
-      const userMatch = userName.includes(searchTerm);
-      
-      return userMatch || messagesMatch;
-    });
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter((chat) => {
+        const userName = chat.userName?.toLowerCase() || '';
+        const searchTerm = searchQuery.toLowerCase();
+        
+        const messagesMatch = chat.messages?.some(message => 
+          message.text?.toLowerCase().includes(searchTerm)
+        );
+        
+        const userMatch = userName.includes(searchTerm);
+        
+        return userMatch || messagesMatch;
+      });
+    }
 
     setFilteredMessages(filtered);
-  }, [messages, searchQuery]);
-
-  // Search handler
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  useEffect(() => {
-    setFilteredMessages(messages);
-  }, [messages]);
+  }, [messages, searchQuery, activeFilter]);
 
   useEffect(() => {
     const fetchUserAndMessages = async () => {
       try {
         console.log('Starting to fetch messages and user data...');
         
-        const chatIds = [
-          '4BxR5TY0jAUg2WXTiDpqqHXhOi92',
-          'fIZNz8yMV9gNgK5iVgHCyhUNJZx2'
-        ];
+        // Fetch all users from the users collection
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        const profiles = {};
+        const userIds = [];
 
-        // First, fetch user information for each chat
-        const names = {};
-        for (const userId of chatIds) {
-          const userDoc = await getDoc(doc(db, 'users', userId));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            names[userId] = userData.name || userData.fullName || 'Anonymous Donor';
-          }
-        }
-        setUserNames(names);
+        usersSnapshot.forEach(doc => {
+          const userData = doc.data();
+          profiles[doc.id] = {
+            name: userData.name || userData.fullName || 'Anonymous User',
+            role: userData.role || 'donor',
+            email: userData.email
+          };
+          userIds.push(doc.id);
+        });
 
-        // Set up real-time listeners for each chat
-        chatIds.forEach(chatId => {
-          const messagesRef = collection(db, 'chats', chatId, 'messages');
+        setUserProfiles(profiles);
+
+        // Set up real-time listeners for each user's chat
+        userIds.forEach(userId => {
+          const messagesRef = collection(db, 'chats', userId, 'messages');
           const q = query(messagesRef, orderBy('timestamp', 'asc'));
           
           onSnapshot(q, (snapshot) => {
             const chatMessages = snapshot.docs.map(doc => ({
               id: doc.id,
-              userId: chatId,
+              userId: userId,
               ...doc.data()
             }));
 
-            setMessages(prevMessages => {
-              // Remove old version of this chat
-              const otherChats = prevMessages.filter(chat => chat.userId !== chatId);
-              
-              // Create updated chat
-              const updatedChat = {
-                userId: chatId,
-                userName: names[chatId],
-                messages: chatMessages,
-                lastMessage: chatMessages[chatMessages.length - 1],
-                lastTimestamp: chatMessages[chatMessages.length - 1]?.timestamp
-              };
+            if (chatMessages.length > 0) {
+              setMessages(prevMessages => {
+                const otherChats = prevMessages.filter(chat => chat.userId !== userId);
+                
+                const updatedChat = {
+                  userId: userId,
+                  userName: profiles[userId]?.name,
+                  userRole: profiles[userId]?.role,
+                  messages: chatMessages,
+                  lastMessage: chatMessages[chatMessages.length - 1],
+                  lastTimestamp: chatMessages[chatMessages.length - 1]?.timestamp,
+                  unreadCount: chatMessages.filter(msg => msg.isUser && !msg.read).length
+                };
 
-              // Sort chats by last message timestamp
-              const newMessages = [...otherChats, updatedChat].sort((a, b) => {
-                const timeA = a.lastTimestamp?.toMillis() || 0;
-                const timeB = b.lastTimestamp?.toMillis() || 0;
-                return timeB - timeA; // Descending order (newest first)
+                const newMessages = [...otherChats, updatedChat].sort((a, b) => {
+                  const timeA = a.lastTimestamp?.toMillis() || 0;
+                  const timeB = b.lastTimestamp?.toMillis() || 0;
+                  return timeB - timeA;
+                });
+
+                if (selectedChat?.userId === userId) {
+                  setSelectedChat(updatedChat);
+                }
+
+                return newMessages;
               });
-
-              // Update selected chat if needed
-              if (selectedChat?.userId === chatId) {
-                setSelectedChat(updatedChat);
-              }
-
-              return newMessages;
-            });
+            }
           });
-        });
-
-        console.log('Processed chats:', messages);
-        setDebugInfo({
-          processedChatIds: chatIds,
-          totalChatsProcessed: messages.length,
-          messagesLength: messages.reduce((acc, chat) => acc + chat.messages.length, 0),
-          userNames: names,
-          dbConnection: !!db,
-          timestamp: new Date().toISOString()
         });
 
       } catch (error) {
         console.error('Error fetching data:', error);
-        setDebugInfo({
-          error: error.message,
-          stack: error.stack,
-          dbConnection: !!db,
-          timestamp: new Date().toISOString()
-        });
       }
     };
 
     fetchUserAndMessages();
 
-    // Sidebar collapse observer
     const checkSidebarState = () => {
       const sidebar = document.querySelector('.sidebar');
       setIsCollapsed(sidebar?.classList.contains('collapsed') || false);
@@ -164,10 +144,7 @@ function AdminChat() {
       observer.observe(sidebar, { attributes: true });
     }
 
-    return () => {
-      observer.disconnect();
-      // Cleanup will be handled automatically for onSnapshot
-    };
+    return () => observer.disconnect();
   }, []);
 
   const handleSendMessage = async (e) => {
@@ -188,7 +165,6 @@ function AdminChat() {
 
       setNewMessage('');
 
-      // Fetch updated messages for this chat
       const q = query(messagesRef, orderBy('timestamp', 'asc'));
       const messagesSnapshot = await getDocs(q);
       
@@ -224,44 +200,7 @@ function AdminChat() {
     }
   };
 
-  // Add resize functionality
-  useEffect(() => {
-    const handleMouseDown = (e) => {
-      isResizingRef.current = true;
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    };
-
-    const handleMouseMove = (e) => {
-      if (!isResizingRef.current) return;
-      
-      // Calculate new width (minimum 280px, maximum 600px)
-      const newWidth = Math.max(280, Math.min(600, e.clientX - 250));
-      setChatListWidth(newWidth);
-    };
-
-    const handleMouseUp = () => {
-      isResizingRef.current = false;
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    const resizer = resizeRef.current;
-    resizer?.addEventListener('mousedown', handleMouseDown);
-
-    return () => {
-      resizer?.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, []);
-
-  // Scroll to bottom function
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Update chat selection for immediate response
+  // Handle chat selection
   const handleChatSelect = async (chat) => {
     setSelectedChat(chat);
     
@@ -286,17 +225,33 @@ function AdminChat() {
       );
       
       await Promise.all(updatePromises);
+
+      // Update the unread count in the messages list
+      setMessages(prevMessages => 
+        prevMessages.map(prevChat => 
+          prevChat.userId === chat.userId 
+            ? { ...prevChat, unreadCount: 0 }
+            : prevChat
+        )
+      );
     } catch (error) {
       console.error('Error marking messages as read:', error);
     }
   };
 
-  // Add effect to handle scroll position when messages update
-  useEffect(() => {
-    if (selectedChat && chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [selectedChat?.messages]);
+  // Handle mouse events for resizing
+  const handleMouseMove = (e) => {
+    if (!isResizingRef.current) return;
+    
+    // Calculate new width (minimum 280px, maximum 600px)
+    const newWidth = Math.max(280, Math.min(600, e.clientX - 250));
+    setChatListWidth(newWidth);
+  };
+
+  // Scroll to bottom function
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -306,22 +261,57 @@ function AdminChat() {
       }`}>
         <div className="bg-white rounded-lg shadow flex flex-col h-[calc(100vh-2rem)]">
           <div className="p-4 border-b">
-            <h2 className="text-xl font-bold">Donor Support Messages</h2>
+            <h2 className="text-xl font-bold">Support Messages</h2>
           </div>
 
           <div className="flex flex-1 min-h-0">
             {/* Chat list with resizable width */}
             <div style={{ width: chatListWidth }} className="relative flex flex-col border-r">
-              <div className="p-3 border-b">
+              <div className="p-3 border-b space-y-3">
+                {/* Search bar */}
                 <div className="flex items-center bg-gray-100 rounded-lg p-2">
                   <IoSearchOutline className="text-gray-500 mr-2" />
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={handleSearch}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search chats"
                     className="bg-transparent outline-none flex-1"
                   />
+                </div>
+                
+                {/* Filter buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setActiveFilter('all')}
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      activeFilter === 'all'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setActiveFilter('donor')}
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      activeFilter === 'donor'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    Donors
+                  </button>
+                  <button
+                    onClick={() => setActiveFilter('student')}
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      activeFilter === 'student'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    Recipients
+                  </button>
                 </div>
               </div>
 
@@ -335,16 +325,31 @@ function AdminChat() {
                     <div
                       key={chat.userId}
                       onClick={() => handleChatSelect(chat)}
-                      className={`p-3 border-b cursor-pointer hover:bg-gray-50 text-left ${
+                      className={`p-3 border-b cursor-pointer hover:bg-gray-50 ${
                         selectedChat?.userId === chat.userId ? 'bg-blue-50' : ''
                       }`}
                     >
-                      <div className="font-medium">
-                        {chat.userName || `Donor ${chat.userId.slice(0, 8)}`}
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="font-medium">{chat.userName}</div>
+                        <div className={`text-xs px-2 py-1 rounded-full ${
+                          chat.userRole === 'donor' 
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-purple-100 text-purple-800'
+                        }`}>
+                          {chat.userRole}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-500 truncate text-left">
+                      <div className="text-sm text-gray-500">{chat.userEmail}</div>
+                      <div className="text-sm text-gray-500 truncate mt-1">
                         {chat.lastMessage?.text}
                       </div>
+                      {chat.unreadCount > 0 && (
+                        <div className="mt-1">
+                          <span className="bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">
+                            {chat.unreadCount} new
+                          </span>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -362,9 +367,19 @@ function AdminChat() {
               {selectedChat ? (
                 <>
                   {/* Header */}
-                  <div className="p-3 border-b">
-                    <div className="font-medium">
-                      {selectedChat.userName || `Donor ${selectedChat.userId.slice(0, 8)}`}
+                  <div className="p-4 border-b">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-medium text-lg">{selectedChat.userName}</div>
+                        <div className="text-sm text-gray-500">{selectedChat.userEmail}</div>
+                      </div>
+                      <div className={`px-3 py-1 rounded-full text-sm ${
+                        selectedChat.userRole === 'donor'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-purple-100 text-purple-800'
+                      }`}>
+                        {selectedChat.userRole}
+                      </div>
                     </div>
                   </div>
 
@@ -376,12 +391,12 @@ function AdminChat() {
                     {selectedChat.messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`mb-3 ${message.isUser ? 'text-right' : 'text-left'}`}
+                        className={`mb-3 ${message.isUser ? 'text-left' : 'text-right'}`}
                       >
                         <div className="inline-flex flex-col">
                           <div
                             className={`p-3 rounded-lg ${
-                              message.isUser ? 'bg-blue-500 text-white' : 'bg-white'
+                              message.isUser ? 'bg-white' : 'bg-blue-500 text-white'
                             } shadow-sm`}
                           >
                             {message.text}
@@ -437,4 +452,4 @@ function AdminChat() {
   );
 }
 
-export default AdminChat; 
+export default AdminChat;

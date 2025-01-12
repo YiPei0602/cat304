@@ -274,6 +274,7 @@ const DonorDashboard = () => {
                     <ChatDialog 
                         isOpen={isChatOpen} 
                         onClose={() => setIsChatOpen(false)} 
+                        userType="donor"
                     />
                 </div>
             </div>

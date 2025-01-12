@@ -3,11 +3,14 @@ import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Sidebar from '../../components/Sidebar';
 import { useNavigate } from 'react-router-dom';
+import ChatButton from '../../components/ChatButton';
+import ChatDialog from '../../components/ChatDialog';
 
 const StudentDashboard = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
   const [recentCollections, setRecentCollections] = useState([]);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [metrics, setMetrics] = useState({
     totalItems: 0,
     topCategory: '-',
@@ -117,6 +120,10 @@ const StudentDashboard = () => {
       month: 'short',
       day: 'numeric',
     });
+  };
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
   };
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -236,6 +243,15 @@ const StudentDashboard = () => {
               </div>
             </div>
           </div>
+          <ChatButton 
+              onClick={toggleChat} 
+               isOpen={isChatOpen}
+            />
+           <ChatDialog 
+              isOpen={isChatOpen} 
+              onClose={() => setIsChatOpen(false)} 
+              userType = "recipient"
+           />
         </div>
       </div>
     </div>
