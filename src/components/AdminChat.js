@@ -340,7 +340,7 @@ function AdminChat() {
                         </div>
                       </div>
                       <div className="text-sm text-gray-500">{chat.userEmail}</div>
-                      <div className="text-sm text-gray-500 truncate mt-1">
+                      <div className="text-sm text-gray-500 truncate mt-1 text-left">
                         {chat.lastMessage?.text}
                       </div>
                       {chat.unreadCount > 0 && (
@@ -391,17 +391,21 @@ function AdminChat() {
                     {selectedChat.messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`mb-3 ${message.isUser ? 'text-left' : 'text-right'}`}
+                        className={`mb-3 flex ${message.isUser ? 'justify-start' : 'justify-end'}`}
                       >
-                        <div className="inline-flex flex-col">
+                        <div className="inline-flex flex-col max-w-[70%]">
                           <div
-                            className={`p-3 rounded-lg ${
-                              message.isUser ? 'bg-white' : 'bg-blue-500 text-white'
+                            className={`p-3 rounded-lg text-left ${
+                              message.isUser 
+                                ? 'bg-white' 
+                                : 'bg-blue-500 text-white'
                             } shadow-sm`}
                           >
                             {message.text}
                           </div>
-                          <span className="text-xs text-gray-500 mt-1">
+                          <span className={`text-xs text-gray-500 mt-1 ${
+                            message.isUser ? 'text-left' : 'text-right'
+                          }`}>
                             {message.timestamp?.toDate().toLocaleTimeString([], { 
                               hour: '2-digit', 
                               minute: '2-digit'
