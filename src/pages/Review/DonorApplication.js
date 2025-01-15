@@ -49,8 +49,8 @@ function DonorApplication() {
 
   const stats = {
     pending: applications.filter((app) => app.status === 'Pending').length,
-    approved: applications.filter((app) => app.status === 'Approved').length,
-    rejected: applications.filter((app) => app.status === 'Rejected').length,
+    approved: applications.filter((app) => app.status === 'Successful').length,
+    rejected: applications.filter((app) => app.status === 'Unsuccessful').length,
     total: applications.length,
   };
 
@@ -167,13 +167,13 @@ function DonorApplication() {
                       <>
                         <button
                           className="px-4 py-2 text-sm font-medium bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
-                          onClick={() => handleStatusChange(app.id, 'Approved')}
+                          onClick={() => handleStatusChange(app.id, 'Successful')}
                         >
                           Approve
                         </button>
                         <button
                           className="px-4 py-2 text-sm font-medium bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
-                          onClick={() => handleStatusChange(app.id, 'Rejected')}
+                          onClick={() => handleStatusChange(app.id, 'Unsuccessful')}
                         >
                           Reject
                         </button>
