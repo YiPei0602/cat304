@@ -15,7 +15,6 @@ import ItemList from './pages/Student/itemList';
 import DonationHistory from './pages/donor/DonationHistory';
 import CollectionHistory from './pages/Student/collectionHistory';
 import DonorApplication from "./pages/Review/DonorApplication";
-import StudentApplication from './pages/Review/StudentApplication';
 import Suggestion from './pages/donor/Suggestion';
 import Settings from './pages/admin/Settings';
 import AdminChat from './components/AdminChat';
@@ -39,7 +38,6 @@ function App() {
         <Route path="/notifications" element ={<Notifications />}/>
         <Route path="/donor/history" element={<DonationHistory />} />
         <Route path="/collectionHistory" element ={<CollectionHistory/>}/>
-        <Route path="/student-application" element={<StudentApplication />} />
         <Route path="/donor-application" element={<DonorApplication />} />
         <Route path="/suggestion" element={<Suggestion />} />
         <Route path='/settings' element={<Settings />} />

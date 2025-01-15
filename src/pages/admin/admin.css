@@ -558,3 +558,29 @@ td button.icon-btn:last-child:hover {
   color: white;
   transform: translateX(-15px); /* Move the text to the right */
 }
+
+.section-header {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.sub-header {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #555;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.sub-text {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  color: #777;
+  text-align: left;
+  margin-bottom: 30px;
+}

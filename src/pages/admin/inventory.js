@@ -439,7 +439,7 @@ const Inventory = () =>{
         <div className="dashboard-layout">
             <Sidebar userRole={role} />
             <div className="dashboard-content">
-                <h1>Inventory List</h1>
+            <h1 className="section-header">Inventory List</h1>
                 <div className="row">
                 <div className="search-bar">
                     <input 

@@ -4,64 +4,46 @@ import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 
 // Icons
-import { FaHome, FaHistory, FaTasks } from "react-icons/fa"; // Add FaTasks
+import { FaHome, FaHistory, FaTasks } from "react-icons/fa";
 import { MdInventory, MdOutlineViewList, MdOutlineSettings } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 import { IoMdQrScanner } from "react-icons/io";
 import { TbBulb } from "react-icons/tb";
-import { BiSupport } from "react-icons/bi";
+import { BiSupport, BiLogOut } from "react-icons/bi";
 
 const menuConfig = {
   admin: [
     { title: "Dashboard", path: "/adminDashboard", icon: <FaHome /> },
     { title: "Inventory", path: "/inventory", icon: <MdInventory /> },
     { title: "QR Scanner", path: "/qrscanner", icon: <IoMdQrScanner /> },
-    { title: "Reports", path: "/reports" },
-    {
-      title: "Review Application",
-      icon: <FaTasks />,
-      children: [
-        { title: "Student Application", path: "/student-application" },
-        { title: "Donor Application", path: "/donor-application" },
-      ],
-    },
+    { title: "Reports", path: "/reports", icon: <FaTasks /> },
+    { title: "Application", path: "/donor-application", icon: <FaTasks /> },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
     { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
-    { title: "User Support", path: "/admin/chat", icon: <BiSupport />},
-    { title: "System Logs", path: "/systemlogs" },
+    { title: "User Support", path: "/admin/chat", icon: <BiSupport /> },
   ],
-
   student: [
-    { title: "Dashboard", path: "/studentDashboard", icon: <FaHome />},
-    { title: "Item List", path: "/itemlist" , icon: <MdOutlineViewList />},
+    { title: "Dashboard", path: "/studentDashboard", icon: <FaHome /> },
+    { title: "Item List", path: "/itemlist", icon: <MdOutlineViewList /> },
     { title: "History", path: "/collectionHistory", icon: <FaHistory /> },
-    // { title: "Track Status", path: "/trackStatus" },
-    // { title: "Settings", path: "/settings", icon: <MdOutlineSettings/> },
-    // { title: "Notifications", path: "/notifications" , icon: <IoMdNotifications/> },
   ],
   donor: [
-    { title: "Dashboard", path: "/donorDashboard", icon: <FaHome />},
+    { title: "Dashboard", path: "/donorDashboard", icon: <FaHome /> },
     { title: "Donation History", path: "/donor/history", icon: <FaHistory /> },
-    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications/> },
-    // { title: "Track Status", path: "/trackStatus" },
-    { title: "Donation Suggestion", path: "/suggestion", icon: < TbBulb/> },
-    { title: "Settings", path: "/settings", icon: <MdOutlineSettings/>  },
+    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
+    { title: "Donation Suggestion", path: "/suggestion", icon: <TbBulb /> },
+    { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
   ],
 };
 
 const Sidebar = ({ userRole }) => {
   const navigate = useNavigate();
   const Menus = menuConfig[userRole] || [];
-  const [expandedMenu, setExpandedMenu] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
   const handleMenuClick = (path) => navigate(path);
-
-  const toggleSubMenu = (menuTitle) => {
-    setExpandedMenu((prev) => (prev === menuTitle ? null : menuTitle));
-  };
 
   const handleLogout = async () => {
     if (window.confirm("Are you sure you want to log out?")) {
@@ -77,49 +59,96 @@ const Sidebar = ({ userRole }) => {
   };
 
   return (
-    <div className={`sidebar bg-dark text-white vh-100 p-3 ${isCollapsed ? "collapsed" : ""}`}>
-      <button className="collapse-btn" onClick={toggleSidebar}>
-        {isCollapsed ? ">" : "<"}
-      </button>
-      <div className="mb-4">
-        <h5>{userRole.charAt(0).toUpperCase() + userRole.slice(1)} Portal</h5>
+    <div
+      className={`sidebar bg-dark text-white vh-100 d-flex flex-column ${
+        isCollapsed ? "collapsed" : "expanded"
+      }`}
+      style={{
+        width: isCollapsed ? "70px" : "230px",
+        transition: "width 0.3s ease",
+      }}
+    >
+      {/* Sidebar Header */}
+      <div className="d-flex align-items-center px-3 py-3">
+        <span
+          style={{
+            cursor: "pointer",
+            fontSize: "2.1rem",
+            width: "35px",
+            color: "white",
+          }}
+          onClick={toggleSidebar}
+        >
+          ☰
+        </span>
+        {!isCollapsed && (
+          <h5 className="m-0 ms-2">{userRole.charAt(0).toUpperCase() + userRole.slice(1)} Portal</h5>
+        )}
       </div>
-      <ul className="nav flex-column">
+
+      {/* Sidebar Menu */}
+      <ul className="nav flex-column flex-grow-1">
         {Menus.map((menu, index) => (
-          <li key={index}>
+          <li
+            key={index}
+            className="nav-item"
+            style={{
+              listStyle: "none",
+            }}
+          >
             <div
-              className={`nav-item mb-2 ${menu.children ? "dropdown" : ""}`}
-              onClick={() => (menu.children ? toggleSubMenu(menu.title) : handleMenuClick(menu.path))}
+              className="nav-link text-white d-flex align-items-center"
+              style={{
+                cursor: "pointer",
+                padding: "10px 15px",
+                borderRadius: "5px",
+                transition: "background-color 0.2s ease",
+              }}
+              onClick={() => handleMenuClick(menu.path)}
             >
-              <span className="nav-link text-white d-flex align-items-center">
-                <span className="me-2">{menu.icon}</span>
-                {!isCollapsed && <span>{menu.title}</span>}
-                {menu.children && !isCollapsed && (
-                  <span className="ms-auto">{expandedMenu === menu.title ? "-" : "+"}</span>
-                )}
+              <span
+                style={{
+                  fontSize: "1.5rem",
+                  width: "30px",
+                  textAlign: "center",
+                  marginRight: isCollapsed ? "0" : "15px",
+                }}
+              >
+                {menu.icon}
               </span>
+              {!isCollapsed && <span>{menu.title}</span>}
             </div>
-            {menu.children && expandedMenu === menu.title && (
-              <ul className="nav flex-column ps-3">
-                {menu.children.map((child, childIndex) => (
-                  <li
-                    key={childIndex}
-                    className="nav-item"
-                    onClick={() => handleMenuClick(child.path)}
-                  >
-                    <span className="nav-link text-white">{child.title}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
           </li>
         ))}
       </ul>
-      <div className="mt-auto">
-        <button onClick={handleLogout} className="btn btn-danger">
-          Logout
-        </button>
-      </div>
+
+      {/* Logout Button */}
+      <ul className="nav flex-column mt-auto mb-3">
+        <li className="nav-item">
+          <div
+            className="nav-link text-white d-flex align-items-center"
+            style={{
+              cursor: "pointer",
+              padding: "10px 15px",
+              borderRadius: "5px",
+              transition: "background-color 0.2s ease",
+            }}
+            onClick={handleLogout}
+          >
+            <span
+              style={{
+                fontSize: "1.5rem",
+                width: "30px",
+                textAlign: "center",
+                marginRight: isCollapsed ? "0" : "15px",
+              }}
+            >
+              <BiLogOut />
+            </span>
+            {!isCollapsed && <span>Logout</span>}
+          </div>
+        </li>
+      </ul>
     </div>
   );
 };

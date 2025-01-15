@@ -219,10 +219,10 @@ const Notification = () => {
     <div className="dashboard-layout">
       <Sidebar userRole={role} />
       <div className="dashboard-content notification-container">
-        <h1>Notification Center</h1>
+      <h1 className="section-header">Notification Center</h1>
 
         {loading ? (
-          <p>Loading...</p>
+          <p className="sub-text">Loading...</p>
         ) : (
           <div className="notification-table">
             {notiList.length > 0 ? (

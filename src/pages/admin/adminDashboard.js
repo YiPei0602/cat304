@@ -2,6 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../../components/Sidebar';
+import Header from "../../components/Header";
 import { Bar, Pie } from 'react-chartjs-2';
 import { collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
 import app from '../../firebase';
@@ -229,9 +230,9 @@ const AdminDashboard = () =>{
             <Sidebar userRole={role} />
             <div className="dashboard-content">
                 <div className="container mx-auto">
-                    <h1>Dashboard</h1>
-                    <h2>Welcome, {name}</h2>
-                    <p>Your role is {role}</p>
+                <h1 className="section-header">Dashboard</h1>
+        <h2 className="sub-header">Welcome, {name}!</h2>
+        <p className="sub-text">Your role is {role}</p>
 
                     {/* Metrics Display */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

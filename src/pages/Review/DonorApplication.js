@@ -75,7 +75,7 @@ function DonorApplication() {
     <div className="dashboard-layout">
       <Sidebar userRole="admin" />
       <div className="dashboard-content p-6">
-        <h1 className="text-2xl font-bold mb-6">Donor Application Dashboard</h1>
+      <h1 className="section-header">Donor Application Dashboard</h1>
 
         {/* Stats Buttons */}
         <div className="grid grid-cols-4 gap-3 mb-6">
