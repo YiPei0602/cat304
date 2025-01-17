@@ -27,7 +27,11 @@ const DonorDashboard = () => {
     const fetchDonorMetrics = useCallback(async () => {
         try {
             const donationsRef = collection(db, 'donations');
-            const q = query(donationsRef, where('donorId', '==', userId));
+            const q = query(
+                donationsRef, 
+                where('donorId', '==', userId),
+                where('status', '==', 'Successful') // Only count successful donations
+            );
             const querySnapshot = await getDocs(q);
             
             let totalItems = 0;
@@ -35,20 +39,37 @@ const DonorDashboard = () => {
             
             querySnapshot.forEach((doc) => {
                 const donation = doc.data();
+                // Convert to number and handle invalid values
                 const itemCount = parseInt(donation.numberOfItems) || 0;
-                totalItems += itemCount;
                 
-                if (donation.category) {
-                    categoryItemCount[donation.category] = (categoryItemCount[donation.category] || 0) + itemCount;
+                // Only count if it's a valid number
+                if (!isNaN(itemCount)) {
+                    totalItems += itemCount;
+                    
+                    // Count items by category
+                    if (donation.category) {
+                        categoryItemCount[donation.category] = (categoryItemCount[donation.category] || 0) + itemCount;
+                    }
                 }
             });
 
-            const topCategory = Object.entries(categoryItemCount).length > 0 
-                ? Object.entries(categoryItemCount).reduce((a, b) => (a[1] > b[1] ? a : b), ['', 0])[0]
-                : '-';
+            // Find the category with the most items
+            let topCategory = '-';
+            let maxItems = 0;
+            
+            Object.entries(categoryItemCount).forEach(([category, count]) => {
+                if (count > maxItems) {
+                    maxItems = count;
+                    topCategory = category;
+                }
+            });
 
-            console.log('Category item counts:', categoryItemCount);
-            console.log('Top category:', topCategory);
+            console.log('Metrics Debug:', {
+                totalDonations: querySnapshot.size,
+                totalItems,
+                categoryItemCount,
+                topCategory
+            });
 
             setMetrics({
                 totalDonations: querySnapshot.size,
