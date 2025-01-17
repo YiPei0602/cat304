@@ -300,12 +300,16 @@ const DonationHistory = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                {filteredDonations.map((donation) => (
+                                {filteredDonations.map((donation, index) => (
                                     <tr 
                                         key={donation.id} 
-                                        className="bg-white transition-colors duration-200 ease-in-out [&:hover]:!bg-gray-100"
+                                        className={`bg-white transition-colors duration-200 ease-in-out hover:bg-gray-100 ${
+                                            index === filteredDonations.length - 1 ? 'last:rounded-b-lg' : ''
+                                        }`}
                                     >
-                                        <td className="px-6 py-4 text-center border-0">
+                                        <td className={`px-6 py-4 text-center border-0 ${
+                                            index === filteredDonations.length - 1 ? 'first:rounded-bl-lg' : ''
+                                        }`}>
                                             {formatDate(donation.date)}
                                         </td>
                                         <td className="px-6 py-4 text-center border-0">
@@ -326,7 +330,9 @@ const DonationHistory = () => {
                                                 {donation.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-center border-0">
+                                        <td className={`px-6 py-4 text-center border-0 ${
+                                            index === filteredDonations.length - 1 ? 'last:rounded-br-lg' : ''
+                                        }`}>
                                             <a 
                                                 href="#" 
                                                 onClick={(e) => {
