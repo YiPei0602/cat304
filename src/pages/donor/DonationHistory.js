@@ -124,18 +124,28 @@ const DonationHistory = () => {
 
     // Prepare data for pie chart
     const pieChartData = useMemo(() => {
-        const categoryCount = donations.reduce((acc, donation) => {
-            acc[donation.category] = (acc[donation.category] || 0) + 1;
+        // Filter for successful donations only
+        const successfulDonations = donations.filter(donation => donation.status === 'Successful');
+        
+        // Count items by category
+        const categoryCount = successfulDonations.reduce((acc, donation) => {
+            const category = donation.category;
+            const itemCount = parseInt(donation.numberOfItems) || 0;
+            acc[category] = (acc[category] || 0) + itemCount;
             return acc;
         }, {});
 
+        // Calculate total for percentage
         const total = Object.values(categoryCount).reduce((a, b) => a + b, 0);
+
+        // Debug log
+        console.log('Pie Chart Data:', { categoryCount, total });
 
         return {
             labels: Object.keys(categoryColors),
             datasets: [{
                 data: Object.keys(categoryColors).map(category => 
-                    ((categoryCount[category] || 0) / total) * 100
+                    ((categoryCount[category] || 0) / (total || 1)) * 100
                 ),
                 backgroundColor: Object.values(categoryColors),
                 borderWidth: 1
@@ -145,18 +155,53 @@ const DonationHistory = () => {
 
     // Prepare data for bar chart
     const barChartData = useMemo(() => {
-        const monthlyDonations = donations.reduce((acc, donation) => {
-            const date = new Date(donation.date);
+        // Filter for successful donations only
+        const successfulDonations = donations.filter(donation => donation.status === 'Successful');
+        
+        // Group donations by month with proper date handling
+        const monthlyDonations = successfulDonations.reduce((acc, donation) => {
+            // Ensure we're working with a proper Date object
+            const date = donation.date instanceof Date ? donation.date : new Date(donation.date);
             const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
-            acc[monthYear] = (acc[monthYear] || 0) + 1;
+            
+            // Ensure we're parsing numbers correctly
+            const itemCount = parseInt(donation.numberOfItems, 10) || 0;
+            
+            // Add to accumulator
+            acc[monthYear] = (acc[monthYear] || 0) + itemCount;
+            
+            // Debug log for each donation
+            console.log('Processing donation:', {
+                date: date,
+                monthYear: monthYear,
+                itemCount: itemCount,
+                runningTotal: acc[monthYear]
+            });
+            
             return acc;
         }, {});
 
+        // Sort months chronologically
+        const sortedMonths = Object.keys(monthlyDonations).sort((a, b) => {
+            const dateA = new Date(a);
+            const dateB = new Date(b);
+            return dateA - dateB;
+        });
+
+        // Get last 12 months
+        const last12Months = sortedMonths.slice(-12);
+
+        // Debug logs
+        console.log('Monthly Donations:', monthlyDonations);
+        console.log('Sorted Months:', sortedMonths);
+        console.log('Last 12 Months:', last12Months);
+        console.log('Final Data:', last12Months.map(month => monthlyDonations[month]));
+
         return {
-            labels: Object.keys(monthlyDonations).slice(-12),
+            labels: last12Months,
             datasets: [{
-                label: 'Number of Donations',
-                data: Object.values(monthlyDonations).slice(-12),
+                label: 'Number of Items Donated',
+                data: last12Months.map(month => monthlyDonations[month] || 0),
                 backgroundColor: '#7dc9ff',
                 borderColor: '#68a8f1',
                 borderWidth: 1,
