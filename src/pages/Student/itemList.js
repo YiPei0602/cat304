@@ -158,7 +158,7 @@ const ItemList = () => {
       <Sidebar userRole={role} />
       <div className="dashboard-content">
         <div className="p-6">
-          <h1 className="text-2xl font-bold mb-6">Available Items</h1>
+        <h1 className="section-header">Available Items</h1>
 
           {/* Filters */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">

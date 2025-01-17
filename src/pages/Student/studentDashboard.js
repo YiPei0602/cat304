@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Sidebar from '../../components/Sidebar';
@@ -25,7 +25,7 @@ const StudentDashboard = () => {
     fetchRecentCollections();
   }, [userId]);
 
-  const fetchRecentCollections = async () => {
+  const fetchRecentCollections = useCallback(async () => {
     const db = getFirestore();
     const historyRef = collection(db, 'collectionHistory');
     const q = query(
@@ -52,9 +52,9 @@ const StudentDashboard = () => {
     } catch (error) {
       console.error('Error fetching recent collections:', error);
     }
-  };
+  }, [userId]);
 
-  const fetchCollectionData = async () => {
+  const fetchCollectionData = useCallback(async () => {
     const db = getFirestore();
     const historyRef = collection(db, 'collectionHistory');
     const userQuery = query(historyRef, where('userId', '==', userId));
@@ -112,7 +112,7 @@ const StudentDashboard = () => {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };
+  }, [userId]);
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -130,13 +130,13 @@ const StudentDashboard = () => {
 
   return (
     <div className="dashboard-layout">
-      <div className="sidebar">
-        <Sidebar userRole={role} />
-      </div>
+      <Sidebar userRole={role} />
       <div className="dashboard-content p-6">
         <div className="container mx-auto">
-          <h1 className="text-2xl font-bold mb-6">Student Dashboard</h1>
-          <h2 className="text-xl mb-8">Welcome, {name}</h2>
+          {/* Unified Title Section */}
+          <h1 className="section-header">Student Dashboard</h1>
+          <h2 className="sub-header">Welcome, {name}!</h2>
+          <p className="sub-text">Your role is {role}</p>
 
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -152,15 +152,15 @@ const StudentDashboard = () => {
 
           {/* Recent Collections Table */}
           <div className="bg-white rounded-lg shadow mb-8">
-          <div className="flex justify-between items-center p-6 border-b">
-            <h3 className="text-xl font-semibold mx-auto">Recent Collections</h3>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              onClick={() => navigate('/collectionHistory')} // Navigate to collectionHistory page
-            >
-              View All
-            </button>
-          </div>
+            <div className="flex justify-between items-center p-6 border-b">
+              <h3 className="text-xl font-semibold mx-auto">Recent Collections</h3>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={() => navigate('/collectionHistory')} // Navigate to collectionHistory page
+              >
+                View All
+              </button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -243,15 +243,17 @@ const StudentDashboard = () => {
               </div>
             </div>
           </div>
+
+          {/* Chat Features */}
           <ChatButton 
-              onClick={toggleChat} 
-               isOpen={isChatOpen}
-            />
-           <ChatDialog 
-              isOpen={isChatOpen} 
-              onClose={() => setIsChatOpen(false)} 
-              userType = "recipient"
-           />
+            onClick={toggleChat} 
+            isOpen={isChatOpen}
+          />
+          <ChatDialog 
+            isOpen={isChatOpen} 
+            onClose={() => setIsChatOpen(false)} 
+            userType="recipient"
+          />
         </div>
       </div>
     </div>

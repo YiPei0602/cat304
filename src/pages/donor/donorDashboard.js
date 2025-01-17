@@ -1,5 +1,4 @@
-// donor dashboard
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { db } from '../../firebase';
@@ -157,8 +156,10 @@ const DonorDashboard = () => {
             <Sidebar userRole={role} />
             <div className="dashboard-content p-6">
                 <div className="container mx-auto">
-                    <h1 className="text-2xl font-bold mb-6">Donor Dashboard</h1>
-                    <h2 className="text-xl mb-8">Welcome, {name}</h2>
+                    {/* Unified Title Section */}
+                    <h1 className="section-header">Donor Dashboard</h1>
+                    <h2 className="sub-header">Welcome, {name}!</h2>
+                    <p className="sub-text">Your role is {role}</p>
 
                     {/* Metrics Display */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

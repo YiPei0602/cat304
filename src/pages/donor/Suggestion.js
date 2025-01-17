@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import app from '../../firebase';
-import { collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import Sidebar from '../../components/Sidebar';
 
 // icons
@@ -58,38 +58,24 @@ const Suggestion = () => {
             id: doc.id,
             ...doc.data(),
         }));
-        const today = new Date();
-        
-        const getStartDate = (item) =>
-            selectedSemester === "Sem 1" ? new Date(item.sem1StartDate) : new Date(item.sem2StartDate);
-        const getEndDate = (item) =>
-            selectedSemester === "Sem 1" ? new Date(item.sem1EndDate) : new Date(item.sem2EndDate);
-    
-        const isTodayInRange = (item) => {
-            const startDate = getStartDate(item);
-            const endDate = getEndDate(item);
-            return today >= startDate && today <= endDate;
-        };
-    
-        // Find today's week
-        let todayWeek = null;
-        data.forEach((item) => {
-            if (isTodayInRange(item)) {
-                todayWeek = item.week; // Save today's week number
-            }
+
+        const sortedData = data.sort((a, b) => a.week - b.week); // Always sort weeks in ascending order
+
+        // Update weekData based on selected semester
+        const filteredData = sortedData.map(item => {
+            return {
+                id: item.id,
+                week: item.week,
+                sem1StartDate: item.sem1StartDate,
+                sem1EndDate: item.sem1EndDate,
+                sem2StartDate: item.sem2StartDate,
+                sem2EndDate: item.sem2EndDate,
+                reference: item.reference,
+                item: item.item,
+            };
         });
-    
-        // Default to ascending sort by week if todayWeek is not found
-        const sortedData = data.sort((a, b) => a.week - b.week);
-    
-        if (todayWeek) {
-            // Rearrange weeks starting from today's week
-            const reorderedData = sortedData.filter(item => item.week >= todayWeek)
-                .concat(sortedData.filter(item => item.week < todayWeek));
-            setWeekData(reorderedData);
-        } else {
-            setWeekData(sortedData); // Fallback if todayWeek is not found
-        }
+
+        setWeekData(filteredData);
     };
 
     const [curReqPage, setCurReqPage] = useState(1);
@@ -104,44 +90,31 @@ const Suggestion = () => {
     const curWeekRows = weekData.slice(weekFirstIdx, weekLastIdx);
 
     const handleNextPage = (type) => {
-        // if(type === 'req'){
-        //     if (curReqRows.length === rowsPerPage) {
-        //         setCurReqPage(curReqPage + 1);
-        //       }
-        // } else if (type === 'week') {
-        //     if (curWeekRows.length === rowsPerPage) {
-        //         setCurWeekPage(curWeekPage + 1);
-        //       }
-        // }
         if (type === "req" && curReqRows.length === rowsPerPage) {
             setCurReqPage((prev) => prev + 1);
-          } else if (type === "week" && curWeekRows.length === rowsPerPage) {
+        } else if (type === "week" && curWeekRows.length === rowsPerPage) {
             setCurWeekPage((prev) => prev + 1);
-          }
+        }
+    };
 
-
-      };
-
-      const handlePreviousPage = (type) => {
-
+    const handlePreviousPage = (type) => {
         if (type === "req" && curReqPage > 1) {
             setCurReqPage((prev) => prev - 1);
-          } else if (type === "week" && curWeekPage > 1) {
+        } else if (type === "week" && curWeekPage > 1) {
             setCurWeekPage((prev) => prev - 1);
-          }
-
-      }; 
+        }
+    };
       
     useEffect(() => {
         fetchHistory();
         fetchWeekData();
-    }, [fetchHistory, fetchWeekData]);
+    }, [selectedSemester]);
 
     return(
     <div className="dashboard-layout">
       <Sidebar userRole={role}/>
       <div className="dashboard-content">
-      <h1>Suggestions</h1>
+      <h1 className="section-header">Suggestions</h1>
 
         {/* Student Request Item */}
         <h2>Request Items List</h2>    

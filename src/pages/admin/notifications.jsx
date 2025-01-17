@@ -13,11 +13,12 @@ import app from "../../firebase";
 
 // React Icons
 import {
-  FaTimesCircle,       // Expired
-  FaExclamationTriangle, // Expiring Soon
-  FaInfoCircle,          // Low Stock
-  FaEllipsisV,           // 3-dot menu
-  FaFileSignature             // New Donor Application
+  FaTimesCircle,             // Expired
+  FaExclamationTriangle,     // Expiring Soon
+  FaInfoCircle,              // Low Stock
+  FaEllipsisV,               // 3-dot menu
+  FaFileSignature,           // New Donor Application
+  FaBell                     // Bell icon for the modal
 } from "react-icons/fa";
 
 import "./notifications.css";
@@ -50,6 +51,21 @@ const Notification = () => {
     setIsModalOpen(false);
   };
 
+  // Close modal on Esc key
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+    if (isModalOpen) {
+      window.addEventListener("keydown", handleEsc);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isModalOpen]);
+
   // -----------------------------
   // 3-DOT DROPDOWN
   // -----------------------------
@@ -66,7 +82,7 @@ const Notification = () => {
       updated[index].isRead = true;
       return updated;
     });
-    setOpenDropdownIndex(null);
+    setOpenDropdownIndex(null); // Close the dropdown after action
   };
 
   const handleMarkAsUnread = (index) => {
@@ -75,7 +91,7 @@ const Notification = () => {
       updated[index].isRead = false;
       return updated;
     });
-    setOpenDropdownIndex(null);
+    setOpenDropdownIndex(null); // Close the dropdown after action
   };
 
   // -----------------------------
@@ -94,7 +110,7 @@ const Notification = () => {
           item_name: data.item_name,
           campus: data.campus,
           title: "Item has Low Stock!",
-          message: `The item "${data.item_name}" is in low stock! May suggest to donors for donation.`,
+          message: `The item "<strong>${data.item_name}</strong>" is in low stock! May suggest to donors for donation.`,
           isRead: false,
         });
       });
@@ -131,7 +147,7 @@ const Notification = () => {
               campus: data.campus,
               expiry_date: detail.expiry_date,
               title: "Item is already Expired!",
-              message: `The item "${data.item_name}" has expired. Please take action!`,
+              message: `The item "<strong>${data.item_name}</strong>" has expired. Please take action!`,
               isRead: false,
             });
           } else if (daysToExpiry <= 7 && daysToExpiry > 0) {
@@ -141,7 +157,7 @@ const Notification = () => {
               campus: data.campus,
               expiry_date: detail.expiry_date,
               title: "Item is Expiring Soon!",
-              message: `The item "${data.item_name}" is almost expired. Please take action!`,
+              message: `The item "<strong>${data.item_name}</strong>" is almost expired. Please take action!`,
               isRead: false,
             });
           }
@@ -166,13 +182,13 @@ const Notification = () => {
       try {
         const expiryNoti = await getFoodNoti();
         const lowStock = await lowStockNoti();
-        // combine them
+        // Combine them
         const combined = [...expiryNoti, ...lowStock];
 
-        // set them in state
+        // Set them in state
         setNotiList(combined);
 
-        // done fetching, remove loading
+        // Done fetching, remove loading
         setLoading(false);
 
         // 2) AFTER we have set the old noti, subscribe to "donations"
@@ -184,13 +200,13 @@ const Notification = () => {
               newDonations.push({
                 type: "New Donor Application",
                 title: "New Donor Application Received!",
-                message: `A new donor named "${data.name}" has submitted a donation!`,
+                message: `A new donor named "<strong>${data.name}</strong>" has submitted a donation!`,
                 isRead: false,
               });
             }
           });
 
-          // if there's newly added doc(s), prepend them
+          // If there's newly added doc(s), prepend them
           if (newDonations.length > 0) {
             setNotiList((prev) => [...newDonations, ...prev]);
           }
@@ -213,13 +229,46 @@ const Notification = () => {
   }, []);
 
   // -----------------------------
+  // HELPER FUNCTIONS
+  // -----------------------------
+  const getNotificationTypeClass = (type) => {
+    switch (type) {
+      case "Expired":
+        return "notification-red";
+      case "Expiring Soon":
+        return "notification-yellow";
+      case "Low Stock":
+        return "notification-green";
+      case "New Donor Application":
+        return "notification-blue";
+      default:
+        return "";
+    }
+  };
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case "Expired":
+        return <FaTimesCircle className="modal-icon-red" />;
+      case "Expiring Soon":
+        return <FaExclamationTriangle className="modal-icon-yellow" />;
+      case "Low Stock":
+        return <FaInfoCircle className="modal-icon-green" />;
+      case "New Donor Application":
+        return <FaFileSignature className="modal-icon-blue" />;
+      default:
+        return <FaInfoCircle />;
+    }
+  };
+
+  // -----------------------------
   // RENDER
   // -----------------------------
   return (
     <div className="dashboard-layout">
       <Sidebar userRole={role} />
       <div className="dashboard-content notification-container">
-      <h1 className="section-header">Notification Center</h1>
+        <h1 className="section-header">Notification Center</h1>
 
         {loading ? (
           <p className="sub-text">Loading...</p>
@@ -227,34 +276,14 @@ const Notification = () => {
           <div className="notification-table">
             {notiList.length > 0 ? (
               notiList.map((noti, index) => {
-                // If unread => show type-based color
-                let typeColorClass = "";
-                if (!noti.isRead) {
-                  if (noti.type === "Expired") {
-                    typeColorClass = "notification-red";
-                  } else if (noti.type === "Expiring Soon") {
-                    typeColorClass = "notification-yellow";
-                  } else if (noti.type === "Low Stock") {
-                    typeColorClass = "notification-green";
-                  } else if (noti.type === "New Donor Application") {
-                    typeColorClass = "notification-blue";
-                  }
-                }
+                // Determine the type-based class only if unread
+                const typeColorClass = !noti.isRead ? getNotificationTypeClass(noti.type) : "";
 
-                // If read => override
+                // If read, add the read class
                 const readClass = noti.isRead ? "notification-read" : "";
 
-                // Icon
-                let icon = <FaInfoCircle />;
-                if (noti.type === "Expired") {
-                  icon = <FaTimesCircle />;
-                } else if (noti.type === "Expiring Soon") {
-                  icon = <FaExclamationTriangle />;
-                } else if (noti.type === "Low Stock") {
-                  icon = <FaInfoCircle />;
-                } else if (noti.type === "New Donor Application") {
-                  icon = <FaFileSignature />;
-                }
+                // Icon based on type
+                const icon = getNotificationIcon(noti.type);
 
                 return (
                   <div
@@ -269,7 +298,7 @@ const Notification = () => {
                     {/* TITLE + MESSAGE */}
                     <div className="notification-cell notification-content">
                       <p className="notification-title">
-                        <strong>{noti.title}</strong>
+                        {noti.title}
                       </p>
                       <p
                         className="notification-message"
@@ -281,28 +310,46 @@ const Notification = () => {
                     <div className="notification-cell notification-actions-cell">
                       <button
                         className="notification-detail-btn"
-                        onClick={() => handleOpenModal(noti)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering other events
+                          handleOpenModal(noti);
+                        }}
                       >
                         View Details
                       </button>
 
                       <span
                         className="notification-dots"
-                        onClick={() => handleToggleDropdown(index)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering other events
+                          handleToggleDropdown(index);
+                        }}
                       >
                         <FaEllipsisV />
+                        {openDropdownIndex === index && (
+                          <div className="notification-dots-menu">
+                            {noti.isRead ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Prevent triggering row events
+                                  handleMarkAsUnread(index);
+                                }}
+                              >
+                                Mark as Unread
+                              </button>
+                            ) : (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Prevent triggering row events
+                                  handleMarkAsRead(index);
+                                }}
+                              >
+                                Mark as Read
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </span>
-
-                      {openDropdownIndex === index && (
-                        <div className="notification-dots-menu">
-                          <button onClick={() => handleMarkAsRead(index)}>
-                            Mark as Read
-                          </button>
-                          <button onClick={() => handleMarkAsUnread(index)}>
-                            Mark as Unread
-                          </button>
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
@@ -322,22 +369,46 @@ const Notification = () => {
             ></div>
 
             <div className="notification-modal-container">
-              <h2 className="notification-reminder-title">REMINDER</h2>
-              <img
-                className="notification-reminder-image"
-                src="https://via.placeholder.com/120"
-                alt="Reminder"
-              />
+              <div className="notification-modal-header">
+                <h2 className="reminder-title">REMINDER</h2>
+                {/* Removed the close (X) button */}
+              </div>
 
               <div className="notification-modal-body">
-                <h3>{selectedNoti.title}</h3>
-                <p
-                  dangerouslySetInnerHTML={{ __html: selectedNoti.message }}
-                />
+                <FaBell className="modal-bell-icon" />
+
+                <div className="modal-details">
+                  {/* Always show the message */}
+                  <p
+                    className="modal-message"
+                    dangerouslySetInnerHTML={{ __html: selectedNoti.message }}
+                  ></p>
+
+                  {/* Conditionally show details based on notification type */}
+                  {selectedNoti.type !== "New Donor Application" && (
+                    <>
+                      {selectedNoti.item_name && (
+                        <p className="modal-info">
+                          <strong>Item Name:</strong> {selectedNoti.item_name}
+                        </p>
+                      )}
+                      {selectedNoti.campus && (
+                        <p className="modal-info">
+                          <strong>Campus:</strong> {selectedNoti.campus}
+                        </p>
+                      )}
+                      {selectedNoti.expiry_date && (
+                        <p className="modal-info">
+                          <strong>Expiry Date:</strong> {new Date(selectedNoti.expiry_date).toLocaleDateString()}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
               <button
-                className="notification-detail-close-btn"
+                className="notification-modal-action-btn"
                 onClick={handleCloseModal}
               >
                 Close

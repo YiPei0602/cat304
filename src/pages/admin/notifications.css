@@ -18,8 +18,6 @@
 /************************************
  * TABLE for notifications
  ************************************/
-/* IMPORTANT: remove or avoid 'overflow: hidden' 
-   so the dropdown can appear properly. */
 .notification-table {
   display: table;
   width: 100%;
@@ -27,22 +25,25 @@
   border-spacing: 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
-  /* Do NOT hide overflow here, or it may clip the dropdown. */
-  overflow: visible; 
+  overflow: visible;
   margin-top: 1rem;
 }
 
-/* Each row is "position: relative;" 
-   so we can absolutely position the dropdown inside it */
 .notification-row {
   display: table-row;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  cursor: default;
 }
 
 .notification-row:hover {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+}
+
+.notification-row:not(:first-child) {
+  border-top: 1px solid #ccc;
 }
 
 .notification-cell {
@@ -55,27 +56,35 @@
  * Type-based color classes (unread)
  ************************************/
 .notification-red {
-  background-color: #ffe6e6; /* Light red for "Expired" */
+  background-color: #ffe6e6;
 }
 
 .notification-yellow {
-  background-color: #fff3cc; /* Light yellow for "Expiring Soon" */
+  background-color: #fff3cc;
 }
 
 .notification-green {
-  background-color: rgb(220, 255, 218); /* Light gray for "Low Stock" */
+  background-color: rgb(220, 255, 218);
 }
 
 .notification-blue {
-  background-color: #e6f7ff; /* light bluish */
+  background-color: #e6f7ff;
 }
 
 /************************************
  * "Read" override (dim)
  ************************************/
 .notification-read {
-  background-color: #bbb !important; 
-  /* or any color that dims the row. */
+  background-color: #f5f5f5 !important;
+  color: #888 !important;
+}
+
+.notification-read .notification-title {
+  font-weight: 400;
+}
+
+.notification-read .notification-message {
+  color: #777;
 }
 
 /************************************
@@ -89,15 +98,17 @@
 .notification-red .notification-icon {
   color: #e74c3c;
 }
+
 .notification-yellow .notification-icon {
   color: #f1c40f;
 }
+
 .notification-green .notification-icon {
-  color: green;
-  
+  color: #27ae60;
 }
+
 .notification-blue .notification-icon {
-  color: #3498db; 
+  color: #3498db;
 }
 
 /************************************
@@ -111,12 +122,16 @@
   margin: 0;
   font-size: 1rem;
   margin-bottom: 0.25rem;
+  font-weight: 700;
+  color: inherit;
+  transition: font-weight 0.3s ease;
 }
 
 .notification-message {
   margin: 0;
   font-size: 0.9rem;
   color: #555;
+  transition: color 0.3s ease;
 }
 
 /************************************
@@ -131,7 +146,7 @@
 }
 
 .notification-detail-btn {
-  background-color: #3498db;
+  background-color: lightslategray;
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
@@ -140,8 +155,9 @@
   font-weight: 500;
   transition: background-color 0.2s ease;
 }
+
 .notification-detail-btn:hover {
-  background-color: #2980b9;
+  background-color: gray;
 }
 
 /************************************
@@ -154,7 +170,6 @@
   user-select: none;
 }
 
-/* The dropdown menu */
 .notification-dots-menu {
   position: absolute;
   top: 110%;
@@ -163,7 +178,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   min-width: 120px;
-  z-index: 9999; /* ensure it appears on top */
+  z-index: 9999;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
@@ -175,7 +190,9 @@
   text-align: left;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
+  font-size: 0.9rem;
 }
+
 .notification-dots-menu button:hover {
   background-color: #eee;
 }
@@ -191,56 +208,131 @@
   height: 100%;
   background-color: rgba(0,0,0,0.5);
   z-index: 1000;
+  animation: fadeIn 0.3s ease;
 }
 
 .notification-modal-container {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  padding: 1.5rem 1rem 3rem;
+  transform: translate(-50%, -50%) scale(1);
+  background: #ffffff;
+  padding: 2rem;
   width: 400px;
   max-width: 90%;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Enhanced 3D shadow */
   z-index: 1010;
+  animation: popUp 0.3s forwards; /* Pop-up animation */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUp {
+  from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* Modal Header */
+.notification-modal-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.reminder-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #333333;
+}
+
+/* Modal Body */
+.notification-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-.notification-reminder-title {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-.notification-reminder-image {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
+.modal-bell-icon {
+  font-size: 3rem;
+  color: #f1c40f; /* Yellow color for the bell icon */
   margin-bottom: 1rem;
 }
 
-.notification-modal-body {
+.modal-details {
+  width: 100%;
   text-align: left;
-  margin: 0 1rem;
 }
 
-.notification-detail-close-btn {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #e74c3c;
-  color: #fff;
+.modal-info {
+  font-size: 1rem;
+  color: #333333;
+  margin: 0.5rem 0;
+}
+
+.modal-message {
+  font-size: 1rem;
+  color: #555555;
+  margin-bottom: 1rem;
+}
+
+/* Action Button */
+.notification-modal-action-btn {
+  margin-top: 1.5rem;
+  padding: 0.6rem 2rem;
+  background-color: #e74c3c; /* Red background */
+  color: #ffffff; /* White text */
   border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 25px;
   cursor: pointer;
-  font-weight: 500;
+  font-size: 1rem;
   transition: background-color 0.2s ease;
 }
-.notification-detail-close-btn:hover {
+
+.notification-modal-action-btn:hover {
   background-color: #c0392b;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+  .notification-modal-container {
+    padding: 1.5rem;
+    width: 90%;
+  }
+
+  .modal-bell-icon {
+    font-size: 2.5rem;
+  }
+
+  .notification-modal-action-btn {
+    width: 100%;
+    padding: 0.6rem;
+  }
+}
+
+/* Type-based icon colors for modal */
+.modal-icon-red {
+  color: #e74c3c;
+}
+
+.modal-icon-yellow {
+  color: #f1c40f;
+}
+
+.modal-icon-green {
+  color: #27ae60;
+}
+
+.modal-icon-blue {
+  color: #3498db;
 }

@@ -75,7 +75,7 @@ function DonorApplication() {
     <div className="dashboard-layout">
       <Sidebar userRole="admin" />
       <div className="dashboard-content p-6">
-      <h1 className="section-header">Donor Application Dashboard</h1>
+        <h1 className="section-header">Donor Application Dashboard</h1>
 
         {/* Stats Buttons */}
         <div className="grid grid-cols-4 gap-3 mb-6">
@@ -138,29 +138,28 @@ function DonorApplication() {
                   <TableCell value={app.category} />
                   <TableCell value={formatDate(app.date)} />
                   <td className="px-6 py-4 text-center border-0">
-                  <button
-  className="px-4 py-2 text-sm font-medium !bg-purple-500 text-white rounded-md hover:!bg-purple-600 transition duration-300"
-  onClick={() => setSelectedApplication(app)}
->
-  View Details
-</button>
+                    {/* Updated Button Color from Purple to Gray */}
+                    <button
+                      className="px-4 py-2 text-sm font-medium !bg-gray-500 text-white rounded-md hover:!bg-gray-600 transition duration-300"
+                      onClick={() => setSelectedApplication(app)}
+                    >
+                      View Details
+                    </button>
                   </td>
                   <td className="px-6 py-4 text-center border-0">
-                    
-                  <span
-  className={`px-2 py-1 text-xs rounded ${
-    app.status === 'Pending'
-      ? 'bg-yellow-100 text-yellow-800'
-      : app.status === 'Successful'
-      ? 'bg-green-100 text-green-800'
-      : app.status === 'Unsuccessful'
-      ? 'bg-red-100 text-red-800'
-      : 'bg-gray-100 text-gray-800' // Default for unexpected statuses
-  }`}
->
-  {app.status}
-</span>
-
+                    <span
+                      className={`px-2 py-1 text-xs rounded ${
+                        app.status === 'Pending'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : app.status === 'Successful'
+                          ? 'bg-green-100 text-green-800'
+                          : app.status === 'Unsuccessful'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-gray-100 text-gray-800' // Default for unexpected statuses
+                      }`}
+                    >
+                      {app.status}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-center border-0 flex justify-center gap-2">
                     {app.status === 'Pending' && (

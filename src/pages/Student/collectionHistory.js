@@ -107,8 +107,7 @@ const CollectionHistory = () => {
       <Sidebar userRole={role} />
       <div className="dashboard-content">
         <div className="p-6">
-          <h1 className="text-2xl font-bold mb-6">Your Collection History</h1>
-
+          <h1 className="section-header">Your Collection History</h1>
           {/* Filters */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
