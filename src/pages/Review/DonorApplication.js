@@ -10,14 +10,12 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', options).replace(',', ',');
 };
 
-
 function DonorApplication() {
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('All');
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch applications in real-time
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'donations'), (querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => ({
@@ -34,7 +32,6 @@ function DonorApplication() {
     return () => unsubscribe();
   }, []);
 
-  // Update status in Firebase
   const handleStatusChange = async (id, newStatus) => {
     try {
       const applicationRef = doc(db, 'donations', id);
@@ -60,7 +57,13 @@ function DonorApplication() {
       : applications.filter((app) => app.status === filter);
 
   const handleFilterChange = (status) => {
-    setFilter(status);
+    if (status === 'Approved') {
+      setFilter('Successful');
+    } else if (status === 'Rejected') {
+      setFilter('Unsuccessful');
+    } else {
+      setFilter(status);
+    }
   };
 
   if (loading) {
@@ -77,7 +80,6 @@ function DonorApplication() {
       <div className="dashboard-content p-6">
         <h1 className="section-header">Donor Application Dashboard</h1>
 
-        {/* Stats Buttons */}
         <div className="grid grid-cols-4 gap-3 mb-6">
           <StatButton
             color="#FCE7A2"
@@ -113,7 +115,6 @@ function DonorApplication() {
           />
         </div>
 
-        {/* Applications Table */}
         <div className="bg-white rounded-lg shadow mb-8">
           <table className="min-w-full">
             <thead>
@@ -138,7 +139,6 @@ function DonorApplication() {
                   <TableCell value={app.category} />
                   <TableCell value={formatDate(app.date)} />
                   <td className="px-6 py-4 text-center border-0">
-                    {/* Updated Button Color from Purple to Gray */}
                     <button
                       className="px-4 py-2 text-sm font-medium !bg-gray-500 text-white rounded-md hover:!bg-gray-600 transition duration-300"
                       onClick={() => setSelectedApplication(app)}
@@ -155,7 +155,7 @@ function DonorApplication() {
                           ? 'bg-green-100 text-green-800'
                           : app.status === 'Unsuccessful'
                           ? 'bg-red-100 text-red-800'
-                          : 'bg-gray-100 text-gray-800' // Default for unexpected statuses
+                          : 'bg-gray-100 text-gray-800'
                       }`}
                     >
                       {app.status}
@@ -185,7 +185,6 @@ function DonorApplication() {
           </table>
         </div>
 
-        {/* Application Details Modal */}
         {selectedApplication && (
           <ApplicationDetailsModal
             application={selectedApplication}
@@ -240,7 +239,6 @@ const ApplicationDetailsModal = ({ application, onClose }) => (
           </button>
         </div>
         <div className="space-y-4">
-          {/* Basic Information */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Basic Information</h3>
             <div className="grid grid-cols-2 gap-4">
@@ -266,8 +264,6 @@ const ApplicationDetailsModal = ({ application, onClose }) => (
               </div>
             </div>
           </div>
-
-          {/* Delivery Information */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Delivery Information</h3>
             <div className="grid grid-cols-2 gap-4">
@@ -291,8 +287,6 @@ const ApplicationDetailsModal = ({ application, onClose }) => (
               </div>
             </div>
           </div>
-
-          {/* Additional Information */}
           {application.description && (
             <div>
               <h3 className="text-lg font-semibold mb-2">Additional Information</h3>
@@ -304,6 +298,5 @@ const ApplicationDetailsModal = ({ application, onClose }) => (
     </div>
   </div>
 );
-
 
 export default DonorApplication;
