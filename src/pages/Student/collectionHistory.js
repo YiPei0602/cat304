@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getFirestore, collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
 import { QRCodeSVG } from 'qrcode.react';
 import Popup from 'reactjs-popup';
-import DatePicker from 'react-datepicker';
 import 'reactjs-popup/dist/index.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import app from '../../firebase';

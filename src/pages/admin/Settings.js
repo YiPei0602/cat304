@@ -175,49 +175,68 @@ const Settings = () => {
           </button>
         </div>
         {/* Table */}
-        <table>
-          <thead>
-            <tr>
-              <th>Week</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Reference</th>
-              <th>Item Request</th>
-            </tr>
-          </thead>
-          <tbody>
-            {weekData.map((item) => (
-              <tr key={item.id}>
-                <td>{item.week}</td>
-                <td>
-                  {selectedSemester === "Sem 1"
-                    ? item.sem1StartDate
-                    : item.sem2StartDate}
-                </td>
-                <td>
-                  {selectedSemester === "Sem 1"
-                    ? item.sem1EndDate
-                    : item.sem2EndDate}
-                </td>
-                <td>{item.reference || "-"}</td>
-                <td>
-                  <button
-                    onClick={() => {
-                      fetchItemData(item.week);
-                      itemModalOpen(true);
-                    }}
-                  >
-                    View Details
-                  </button>
-                </td>
+        <div className="bg-white rounded-lg shadow mb-8">
+          <table className="min-w-full">
+            <thead>
+              <tr lassName="bg-gray-100 rounded-t-lg">
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                  WEEK
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                  START DATE
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                  END DATE
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                  REFERENCE
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                  ITEM REQUEST
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {weekData.map((item) => (
+                <tr key={item.id}>
+                  <td className="px-6 py-4 text-center border-0">{item.week}</td>
+                  <td className="px-6 py-4 text-center border-0">
+                    {selectedSemester === "Sem 1"
+                      ? item.sem1StartDate
+                      : item.sem2StartDate}
+                  </td>
+                  <td className="px-6 py-4 text-center border-0">
+                    {selectedSemester === "Sem 1"
+                      ? item.sem1EndDate
+                      : item.sem2EndDate}
+                  </td>
+                  <td className="px-6 py-4 text-center border-0">{item.reference || "-"}</td>
+                  <td className="px-6 py-4 text-center border-0">
+                    <button
+                      className="bg-gray-500 text-white border-0 px-4 py-2 rounded-md cursor-pointer font-medium transition-all duration-200 ease-in-out hover:bg-gray-600"
+                      onClick={() => {
+                        fetchItemData(item.week);
+                        itemModalOpen(true);
+                      }}
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Modals */}
         {isModalOpen && (
           <div className="model">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="text-gray-500 hover:text-gray-700 flex ml-auto"
+            >
+              ✕
+            </button>
             <h3 className="sub-header">Set New Semester Date</h3>
             <p className="sub-text">
               Insert the start date for the first week of the semester.
@@ -260,33 +279,112 @@ const Settings = () => {
             </form>
           </div>
         )}
+        
         {itemModal && (
           <div className="model">
             <h3 className="sub-header">Item Required</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Category</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {itemData.map((item) => (
-                  <tr key={item.name}>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>
-                      <button onClick={() => handleRemove(item)}>
-                        <MdDelete />
-                      </button>
-                    </td>
+            <div className="bg-white rounded-lg shadow mt-4 mb-8">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="bg-gray-100 rounded-t-lg">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 rounded-tl-lg">
+                      ITEM
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                      CATEGORY
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 rounded-tr-lg" >
+                      ACTIONS
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <button onClick={() => itemModalOpen(false)}>Close</button>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  { itemData.length >0 ? 
+                    itemData.map((item) => (
+                    <tr key={item.name}>
+                      <td className="px-6 py-4 text-center border-0">
+                        {item.name}
+                      </td>
+                      <td className="px-6 py-4 text-center border-0">
+                        {item.category}
+                      </td>
+                      <td className="px-6 py-4 text-center border-0">
+                        <button 
+                          className="bg-red-500 text-white rounded-md p-2 cursor-pointer transition duration-200 ease-in-out hover:bg-red-600 focus:outline-none"
+                          onClick={() => handleRemove(item)}>
+                          <MdDelete className="text-2xl"/>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                  : <p>No record found.</p>}
+
+                  {isAdding && (
+                    <tr>
+                      <td className="px-6 py-4 text-center border-0">
+                        <input
+                          type="text"
+                          placeholder="Item Name"
+                          value={newItem.name}
+                          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                        />
+                      </td>
+                      <td className="px-6 py-4 text-center border-0">
+                        <input
+                          type="text"
+                          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Item Category"
+                          value={newItem.category}
+                          onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                        />
+                      </td>
+                      <td className="px-6 py-4 text-center border-0">
+                        <button 
+                          className="bg-green-500 text-white border-0 px-4 py-2 rounded-md cursor-pointer font-medium transition-all duration-200 ease-in-out hover:bg-green-600" 
+                          onClick={handleAddItem}>
+                            Add
+                        </button>
+                      </td>
+                      </tr>
+                    )}
+
+                </tbody>
+              </table>
+            </div>
+
+            <br></br>
+            <div className="form-btn">
+              {!isAdding && (
+                <button
+                  type="create"
+                    onClick={() => {
+                      setIsAdding(true);
+                      setNewItem({ ...newItem, docId: itemData[0].docId })
+                    }} 
+                >Add
+                </button>
+              )}
+              <button 
+                className="bg-gray-500 text-white border-0 px-4 py-2 rounded-md cursor-pointer font-medium transition-all duration-200 ease-in-out hover:bg-gray-600"
+                onClick={() => itemModalOpen(false)}>
+                  Close
+              </button>
+            </div>
           </div>
+        )}
+
+        {itemModal && (
+            <div
+                className="model-bck"
+                onClick={() => itemModalOpen(false)}
+            />
+        )}
+
+        {isModalOpen && (
+          <div
+              className="model-bck"
+              onClick={() => setIsModalOpen(false)}
+          />
         )}
       </div>
     </div>

@@ -22,7 +22,11 @@ const UserRoleSelection = () => {
 
   const handleSignUp = () => {
     if (selectedRole) {
-      navigate('/Signup', { state: { role: selectedRole } });
+      if (selectedRole == "admin"){
+        navigate('/Login', { state: { role: selectedRole } });
+      } else {
+        navigate('/Signup', { state: { role: selectedRole } });
+      }
     }
   };
 

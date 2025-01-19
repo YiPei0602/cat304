@@ -54,14 +54,6 @@ const Login = () => {
             state: { role: userRole, name: userName },
           });
         }
-
-        // // Navigate to dashboard with state
-        // navigate('/dashboard', { 
-        //   state: {
-        //     role: userRole,
-        //     name: userName
-        //   }
-        // });
         
       } else {
         setError('User data not found');
@@ -93,9 +85,11 @@ const Login = () => {
     <section>
       <div className="form">
         <h1>Login Page</h1>
+        <br></br>
         {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
 
         <form onSubmit={handleLogin}>
+          <br></br>
           <div className="text_area">
             <input
               type="email"
@@ -121,7 +115,12 @@ const Login = () => {
             />
           </div>
           <input type="submit" value="LOGIN" className="btn" />
-          <a className="link" href="/signup">Sign Up</a>
+          <a 
+            className="link" 
+            href = "/"
+          >
+            Sign Up
+          </a>
         </form>
       </div>
 

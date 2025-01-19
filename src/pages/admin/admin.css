@@ -60,6 +60,10 @@
   align-items: center;
 }
 
+.search-btn:hover {
+  background: #008C99;
+}
+
 /* Filter button */
 .filter-btn {
     width: 40px;
@@ -74,6 +78,12 @@
     border: 1px solid #737373;
     cursor: pointer;
 }
+
+.filter-btn:hover {
+  background: #4a4a4a;
+  color: #fff;
+}
+
 
 /* Filter Modal */
 .filter-container {
@@ -373,16 +383,16 @@ td button {
     font-size: 12px;
 }
   
-td button:first-child {
+/* td button:first-child {
     background-color: #2196f3;
     color: white;
 }
   
 td button:first-child:hover {
     background-color: #1976d2;
-}
+} */
   
-td button:last-child {
+/* td button:last-child {
     align-self: center;
     background-color: #f44336;
     color: white;
@@ -390,7 +400,7 @@ td button:last-child {
   
 td button:last-child:hover {
     background-color: #d32f2f;
-}
+} */
 
 td button.icon-btn {
   background: none;

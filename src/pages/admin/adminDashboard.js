@@ -300,65 +300,92 @@ const AdminDashboard = () =>{
                 </div>
 
                 {/* Collection History Table */}
-                <h2>Student Access History</h2>    
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Item Name</th>
-                            {/* <th>Item Category</th> */}
-                            <th>Number of Item</th>
-                            <th>Status</th>
-                            <th>Access Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { history.length === 0 ? (
-                            <tr>
-                                <td colSpan = '8'>No results found</td>
-                            </tr>
-                        ) : (
-                            currentRows.map((item) => (
-                                <tr key={item.id}>
-                                    <td>{item.userName}</td>
-                                    <td>{item.itemName}</td>
-                                    {/* <td>{item.category}</td> */}
-                                    <td>{item.numItem}</td>
-                                    <td
-                                        style={{
-                                            color:
-                                            item.status === "Ready to collect"
-                                                ? "red"
-                                                : item.status === "Collected"
-                                                ? "green"
-                                                : "blue",
-                                            textAlign: "center",
-                                        }}
-                                    >{item.status}</td>
+                <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
+                    <div className="flex flex-col">
+                        <h3 className="text-xl font-semibold p-6 border-b leading-none m-0">Student Access History</h3>  
+                        <div className="bg-white rounded-lg shadow px-4 py-2">
+                            <table className="min-w-full">
+                                <thead>
+                                    <tr className="bg-gray-100 rounded-t-lg">
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                                            STUDENT NAME
+                                        </th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                            ITEM NAME
+                                        </th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                            NUMBER OF ITEM
+                                        </th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                            STATUS
+                                        </th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 last:rounded-tr-lg">
+                                            ACCESS DATE
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                    { history.length === 0 ? (
+                                        <tr>
+                                            <td colSpan = '8'>No results found</td>
+                                        </tr>
+                                    ) : (
+                                        currentRows.map((item) => (
+                                            <tr key={item.id}>
+                                                <td className="px-6 py-4 text-center border-0">
+                                                    {item.userName}
+                                                </td>
+                                                <td className="px-6 py-4 text-center border-0">
+                                                    {item.itemName}
+                                                </td>
+                                                <td className="px-6 py-4 text-center border-0">
+                                                    {item.numItem}
+                                                </td>
+                                                <td className="px-6 py-4 text-center border-0">
+                                                    <span className={`px-2 py-1 text-xs rounded ${
+                                                        item.status === 'Collected' ? 'bg-green-100 text-green-800' :
+                                                        item.status === 'Ready to collect' ? 'bg-orange-100 text-orange-800' :
+                                                        'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                        {item.status}
+                                                    </span> 
+                                                </td>
 
-                                    <td>{item.status === "Collected" ? 
-                                        new Date(item.collectedAt.toDate()).toLocaleDateString() : "-"}</td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                                                <td className="px-6 py-4 text-center border-0">
+                                                    {item.status === "Collected" ? 
+                                                    new Date(item.collectedAt.toDate()).toLocaleDateString() : "-"}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
                 
-                    <div className='table-navigate'>
-                        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                            <IoCaretBack />
+                    <div className='table-navigate flex justify-center items-center gap-4 mt-4'>
+                        <button 
+                            onClick={handlePreviousPage} 
+                            disabled={currentPage === 1}
+                            className={`flex items-center justify-center px-4 py-2 text-black text-sm font-medium rounded-lg transition-all
+                            ${currentPage === 1 
+                                ? 'bg-gray-300 text-gray-600 cursor-not-allowed' 
+                                : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'}
+                            `}>
+                            <IoCaretBack className="mr-1"/>
                             Back
                         </button>
-                        <p>{currentPage}</p>
+                        <p className="text-gray-800 text-sm font-semibold">{currentPage}</p>
                         {currentRows.length === rowsPerPage && (
-                        <button onClick={handleNextPage}>
-                            <IoCaretForward />
+                        <button 
+                            className="flex items-center justify-center px-4 py-2 text-black text-sm font-medium bg-indigo-600 rounded-lg transition-all hover:bg-indigo-700 active:scale-95"
+                            onClick={handleNextPage}>
+                            <IoCaretForward className="ml-1"/>
                             Next
                         </button>
                     )}
                     </div>
-                
+                </div>
 
             </div>
         </div>
