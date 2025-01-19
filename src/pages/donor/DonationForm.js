@@ -41,9 +41,15 @@ const DonationForm = ({ category, onClose, onSubmitSuccess }) => {
     ];
 
     const dropoffLocations = [
+        'Engineering Campus Library',
+        'Engineering Campus Reception',
+        'Engineering Campus Student Center',
+        'Health Campus Library',
+        'Health Campus Reception',
+        'Health Campus Student Center',
+        'Main Campus Library',
         'Main Campus Reception',
-        'Student Center',
-        'Library'
+        'Main Campus Student Center'
     ];
 
     const handleSubmit = async (e) => {
