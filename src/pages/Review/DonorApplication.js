@@ -12,25 +12,46 @@ const formatDate = (date) => {
 
 function DonorApplication() {
   const [applications, setApplications] = useState([]);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('Pending'); // Default to Pending
+  const [campusFilter, setCampusFilter] = useState('All Campuses');
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'donations'), (querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        date: doc.data().createdAt
-          ? doc.data().createdAt.toDate().toLocaleDateString('en-US')
-          : 'N/A',
-      }));
+      const data = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          date: doc.data().createdAt
+            ? doc.data().createdAt.toDate().toLocaleDateString('en-US')
+            : 'N/A',
+        }))
+        .sort((a, b) => b.createdAt?.toDate() - a.createdAt?.toDate());
       setApplications(data);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+  const campusMapping = {
+    Main: [
+      'Main Campus Library',
+      'Main Campus Reception',
+      'Main Campus Student Center',
+    ],
+    Engineering: [
+      'Engineering Campus Library',
+      'Engineering Campus Reception',
+      'Engineering Campus Student Center',
+    ],
+    Health: [
+      'Health Campus Library',
+      'Health Campus Reception',
+      'Health Campus Student Center',
+    ],
+  };
 
   const handleStatusChange = async (id, newStatus) => {
     try {
@@ -45,16 +66,25 @@ function DonorApplication() {
   };
 
   const stats = {
-    pending: applications.filter((app) => app.status === 'Pending').length,
-    approved: applications.filter((app) => app.status === 'Successful').length,
-    rejected: applications.filter((app) => app.status === 'Unsuccessful').length,
-    total: applications.length,
+    pending: applications.filter(
+      (app) => app.status === 'Pending' && (campusFilter === 'All Campuses' || campusMapping[campusFilter]?.includes(app.dropoffLocation))
+    ).length,
+    approved: applications.filter(
+      (app) => app.status === 'Successful' && (campusFilter === 'All Campuses' || campusMapping[campusFilter]?.includes(app.dropoffLocation))
+    ).length,
+    rejected: applications.filter(
+      (app) => app.status === 'Unsuccessful' && (campusFilter === 'All Campuses' || campusMapping[campusFilter]?.includes(app.dropoffLocation))
+    ).length,
+    total: applications.filter(
+      (app) => campusFilter === 'All Campuses' || campusMapping[campusFilter]?.includes(app.dropoffLocation)
+    ).length,
   };
 
-  const filteredApplications =
-    filter === 'All'
-      ? applications
-      : applications.filter((app) => app.status === filter);
+  const filteredApplications = applications.filter((app) => {
+    if (filter !== 'All' && app.status !== filter) return false;
+    if (campusFilter !== 'All Campuses' && !campusMapping[campusFilter]?.includes(app.dropoffLocation)) return false;
+    return true;
+  });
 
   const handleFilterChange = (status) => {
     if (status === 'Approved') {
@@ -64,6 +94,10 @@ function DonorApplication() {
     } else {
       setFilter(status);
     }
+  };
+
+  const handleCampusFilterChange = (e) => {
+    setCampusFilter(e.target.value);
   };
 
   if (loading) {
@@ -78,7 +112,20 @@ function DonorApplication() {
     <div className="dashboard-layout">
       <Sidebar userRole="admin" />
       <div className="dashboard-content p-6">
-        <h1 className="section-header">Donor Application Dashboard</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="section-header">Donor Application Dashboard</h1>
+          <select
+            id="campusFilter"
+            className="text-base block pl-3 pr-8 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md"
+            value={campusFilter}
+            onChange={handleCampusFilterChange}
+          >
+            <option value="All Campuses">All Campuses</option>
+            <option value="Main">Main</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Health">Health</option>
+          </select>
+        </div>
 
         <div className="grid grid-cols-4 gap-3 mb-6">
           <StatButton
