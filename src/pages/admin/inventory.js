@@ -440,54 +440,73 @@ const Inventory = () =>{
             <Sidebar userRole={role} />
             <div className="dashboard-content">
             <h1 className="section-header">Inventory List</h1>
+            <div className="bg-white rounded-lg shadow mb-8">
                 <div className="row">
-                <div className="search-bar">
+                <div className="search-bar flex items-center ml-4 mt-2">
                     <input 
-                        className="input-search" 
+                        className="input-search px-4 py-2 border rounded-md text-sm" 
                         type="text" 
                         placeholder="Search items..."
                         value={searchTerm}
                         onChange={handleSearchChange}
                     />
                     <button className="search-btn" type="submit">
-                        {/* <i className="fas fa-search"></i> */}
                         <FaSearch />
                     </button>
                     <button className="filter-btn" onClick={() => openFilterModal(true)}>
                         <FaFilter />
                     </button>
                 </div>
-                    <button className="add-btn" onClick={openAddModal}>
+                    <button className="add-btn flex justify-end mt-4 mr-8"
+                        onClick={openAddModal}>
                         Add New Item
                     </button>
                 </div> 
-                <label className="checkbox">
-                    <input
-                        type="checkbox"
-                        checked={showAllItems}
-                        onChange={handleShowAllItems}
-                    />
-                    Show All Items (Including No-stock Items)
-                </label>
+                <div className = "flex items-center ml-5 mt-2">
+                    <label className="checkbox">
+                        <input
+                            type="checkbox"
+                            checked={showAllItems}
+                            onChange={handleShowAllItems}
+                        />
+                        Show All Items (Including No-stock Items)
+                    </label>
+                </div>
                 
 
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
-                <table>
+                <table className="min-w-full">
                     <thead>
-                        <tr>
-                        <th>Item Name</th>
-                        <th>Category</th>
-                        <th>Campus</th>
-                        <th>Expiry Date (Latest)</th>
-                        <th>Stock Level</th>
-                        <th>Quantity</th>
-                        <th>Unit</th>
-                        <th>Action</th>
+                        <tr className="bg-gray-100 rounded-t-lg">
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                                ITEM NAME
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                CATEGORY
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                CAMPUS
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                EXPIRY DATE (LATEST)
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                STOCK LEVEL
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                QUANTITY
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                UNIT
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 last:rounded-tr-lg">
+                                ACTION
+                            </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-200">
                         { filteredInv.length === 0 ? (
                             <tr>
                                 <td colSpan='8'>No results found</td>
@@ -495,38 +514,58 @@ const Inventory = () =>{
                         ) : (
                         filteredInv.map((item) => (
                         <tr key={item.id}>
-                            <td>{item.item_name}</td>
-                            <td>{item.category}</td>
-                            <td>{item.campus}</td>
-                            {/* <td>{item.expiry_date ? item.expiry_date : "-"}</td> */}
-                            <td>{item.expiry_date_list && item.expiry_date_list.length > 0 
-                                ? new Date(Math.min(...item.expiry_date_list.map(entry => new Date(entry.expiry_date)))).toISOString().slice(0, 10) 
-                                : "-"}</td>
-                            <td
-                                style={{
-                                    color:
-                                    item.stock_level === "Low"
-                                        ? "red"
-                                        : item.stock_level === "High"
-                                        ? "green"
-                                        : "orange",
-                                }}
-                            >
-                            {item.stock_level}
+                            <td className="px-6 py-4 text-center border-0">
+                                {item.item_name}
                             </td>
-                            <td>{item.quantity}</td>
-                            <td>{item.unit}</td>
-                            <td>
-                                <button onClick={() => handleRemoveModal(item.id)}>Remove</button>
+                            <td className="px-6 py-4 text-center border-0">
+                                {item.category}
+                            </td>
+                            <td className="px-6 py-4 text-center border-0">
+                                {item.campus}
+                            </td>
+                            <td className="px-6 py-4 text-center border-0">
+                                {item.expiry_date_list && item.expiry_date_list.length > 0 
+                                ? new Date(Math.min(...item.expiry_date_list.map(entry => new Date(entry.expiry_date)))).toISOString().slice(0, 10) 
+                                : "-"}
+                            </td>
+                            <td className="px-6 py-4 text-center border-0">
+                                <span className={`px-2 py-1 text-xs rounded ${
+                                    item.stock_level === 'High' ? 'bg-green-100 text-green-800' :
+                                    item.stock_level === 'Low' ? 'bg-red-100 text-red-800' :
+                                    'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                    {item.stock_level}
+                                </span>
+                            </td>
+                            <td className="px-6 py-4 text-center border-0">
+                                {item.quantity}
+                            </td>
+                            <td className="px-6 py-4 text-center border-0">
+                                {item.unit}
+                            </td>
+                            <td className="px-6 py-4 text-center border-0 last:rounded-tr-lg">
+                                <button
+                                    className="bg-red-500 text-white border-0 px-4 py-2 rounded-md cursor-pointer font-medium transition-all duration-200 ease-in-out hover:bg-red-600"
+                                    onClick={() => handleRemoveModal(item.id)}>Remove</button>
                             </td>
                         </tr>
                         ))
                     )}
                     </tbody>
+                    </table>
+                    )}
+                    </div>
 
                     {isModalOpen && (
                         <div className="model">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-gray-500 hover:text-gray-700 flex ml-auto"
+                                >
+                                ✕
+                            </button>
                             <h3>Add New Item</h3>
+                            <br></br>
                             <form>
                             <div className="label">
                                 <label>Category:</label>
@@ -610,24 +649,7 @@ const Inventory = () =>{
                             </div>
                             <div className="label">
                                 <label>Unit:</label>
-                                {/* <input
-                                    type="text"
-                                    name="unit"
-                                    value={newItem.unit}
-                                    onChange={handleChange}
-                                    required
-                                    readOnly
-                                /> */}
                                 <span>{newItem.unit}</span>
-                                {/* <span>
-                                    {[...new Set(filteredCat.map(item => item.item_name))].map((item_name, id) => (
-                                            <option 
-                                                key={id} 
-                                                value={item_name}>
-                                                {item_name}
-                                            </option>
-                                        ))}
-                                </span> */}
                             </div>
                             </form>
                             <div className="form-btn">
@@ -665,7 +687,14 @@ const Inventory = () =>{
 
                     {createModal && (
                         <div className="model">
+                            <button
+                                onClick={() => openCreateModal(false)}
+                                className="text-gray-500 hover:text-gray-700 flex ml-auto"
+                                >
+                                ✕
+                            </button>
                             <h3>Create New Item</h3>
+                            <br></br>
                             <form
                                 onSubmit={(e) => {
                                     e.preventDefault();
@@ -782,19 +811,26 @@ const Inventory = () =>{
 
                     {filterOpen && (
                         <div className="model">
+                            <button
+                                onClick={() => openFilterModal(false)}
+                                className="text-gray-500 hover:text-gray-700 flex ml-auto"
+                                >
+                                ✕
+                            </button>
                             <h3>Filter Inventory</h3>
                             {/* Campus Filter */}
-                            <div className="filter-container">
+                            <div className="filter-container mt-4">
                             <div className="filter-section">
                             <h4>Campus</h4>
                                 {campuses.map((campus) => (
-                                    <label key={campus}>
+                                    <label key={campus} className= "block text-left">
                                         <input
                                         type="checkbox"
                                         value={campus}
                                         checked={selectedFilters.campus.includes(campus)}
                                         onChange={(e) => handleFilterChange(e, "campus")}
-                                        />
+                                        className="mr-2"
+                                    />
                                         {campus} Campus
                                     </label>
                                 ))}
@@ -804,13 +840,14 @@ const Inventory = () =>{
                             <div className="filter-section">
                             <h4>Category</h4>
                                 {categories.map((category) => (
-                                    <label key={category}>
+                                    <label key={category} className= "block text-left">
                                         <input
                                         type="checkbox"
                                         value={category}
                                         checked={selectedFilters.category.includes(category)}
                                         onChange={(e) => handleFilterChange(e, "category")}
-                                        />
+                                        className="mr-2"
+                                    />
                                         {category}
                                     </label>
                                 ))}
@@ -820,13 +857,14 @@ const Inventory = () =>{
                             <div className="filter-section">
                             <h4>Stock Level</h4>
                                 {stocklevels.map((stocklevel) => (
-                                    <label key={stocklevel}>
+                                    <label key={stocklevel} className= "block text-left">
                                         <input
                                         type="checkbox"
                                         value={stocklevel}
                                         checked={selectedFilters.stock_level.includes(stocklevel)}
                                         onChange={(e) => handleFilterChange(e, "stock_level")}
-                                        />
+                                        className="mr-2"
+                                    />
                                         {stocklevel}
                                     </label>
                                 ))}
@@ -834,10 +872,10 @@ const Inventory = () =>{
                             </div>
                                                             
                             {/* Apply Filter Button */}
-                            <button className="apply-filters" onClick={applyFilters}>
+                            <button className="apply-filters mt-4" onClick={applyFilters}>
                                 Apply Filters
                             </button>
-                            <button className="close-btn" onClick={() => openFilterModal(false)}>
+                            <button className="close-btn mt-4" onClick={() => openFilterModal(false)}>
                                 Close
                             </button>
                         </div>
@@ -846,11 +884,16 @@ const Inventory = () =>{
                     {removeOpen && (
                         <div className="model">
                             <h3>Confirm to remove the item?</h3>
+                            <br></br>
                             <p>The item details will not be recovered anymore</p>
-                            <button 
+                            <br></br>
+                            <button
+                                className="bg-red-500 text-white border-0 px-4 py-2 rounded-md cursor-pointer font-medium transition-all duration-200 ease-in-out hover:bg-red-600" 
                                 onClick={() => deleteItem(selectedItemID)}
                             >Remove</button>
-                            <button onClick={() => openRemoveModal(false)}>Cancel</button>
+                            <button 
+                                className="bg-gray-500 text-white border-0 px-4 py-2 rounded-md cursor-pointer font-medium transition-all duration-200 ease-in-out hover:bg-gray-600 ml-6"
+                                onClick={() => openRemoveModal(false)}>Cancel</button>
                         </div>
                     )}
 
@@ -858,7 +901,10 @@ const Inventory = () =>{
                     {isModalOpen && (
                         <div 
                             className="model-bck"
-                            onClick={() => setIsModalOpen(false)}
+                            onClick={() => {
+                                setIsModalOpen(false);
+                                openCreateModal(false);
+                            }}
                         />
                     )}
 
@@ -875,17 +921,8 @@ const Inventory = () =>{
                             className="model-bck"
                             onClick={() => openRemoveModal(false)}
                         />
-                    )}
-
-                    {createModal && (
-                        <div 
-                            className="modal-bck"
-                            onClick={() => openCreateModal(false)}
-                        />
-                    )}
-                    
-                </table>
-                )}
+                    )}                    
+                
             </div>
         </div>
     );

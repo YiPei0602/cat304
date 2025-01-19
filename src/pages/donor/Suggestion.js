@@ -114,113 +114,162 @@ const Suggestion = () => {
     <div className="dashboard-layout">
       <Sidebar userRole={role}/>
       <div className="dashboard-content">
-      <h1 className="section-header">Suggestions</h1>
+      <h1 className="section-header">Donation Suggestions</h1>
 
         {/* Student Request Item */}
-        <h2>Request Items List</h2>    
-            <table>
-                <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Item Category</th>
-                    <th>Number of Request</th>
-                </tr>
-                </thead>
-                    <tbody>
-                        { history.length === 0 ? (
-                            <tr>
-                                <td colSpan = '8'>No results found</td>
+        <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
+            <div className="flex flex-col">
+                <h3 className="text-xl font-semibold p-6 border-b leading-none m-0">Request Item List</h3>
+                <div className="bg-white rounded-lg shadow px-4 py-2">
+                    <table className="min-w-full">
+                        <thead>
+                            <tr className="bg-gray-100 rounded-t-lg">
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 first:rounded-tl-lg last:rounded-tr-lg">
+                                    ITEM NAME
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                    ITEM CATEGORY
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 last:rounded-tr-lg">
+                                    NUMBER OF REQUEST
+                                </th>
                             </tr>
-                        ) : (
-                            curReqRows.map((item) => (
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            { history.length === 0 ? (
                                 <tr>
-                                    <td>{item.productName}</td>
-                                    <td>{item.category}</td>
-                                    <td>{item.count}</td>
+                                    <td colSpan = '8'>No results found</td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-      
+                            ) : (
+                                curReqRows.map((item) => (
+                                    <tr>
+                                        <td className="px-6 py-4 text-center border-0">
+                                            {item.productName}
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
+                                            {item.category}
+                                        </td>
+                                        <td className="px-6 py-4 text-center border-0">
+                                            {item.count}
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
                       
-                <div className='table-navigate'>
-                    <button onClick={() => handlePreviousPage('req')} disabled={curReqPage === 1}>
-                        <IoCaretBack />
-                            Back
-                    </button>
-                    <p>{curReqPage}</p>
+                    <div className="table-navigate flex justify-center items-center gap-4 mt-4">
+                        <button 
+                            onClick={() => handlePreviousPage('req')} 
+                            disabled={curReqPage === 1}
+                            className={`flex items-center justify-center px-4 py-2 text-black text-sm font-medium rounded-lg transition-all
+                            ${curReqPage === 1 
+                                ? 'bg-gray-300 text-gray-600 cursor-not-allowed' 
+                                : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'}
+                            `}
+                        >
+                            <IoCaretBack className="mr-1" /> Back
+                        </button>
+                        <p className="text-gray-800 text-sm font-semibold">{curReqPage}</p>
                         {curReqRows.length === rowsPerPage && (
-                    <button onClick={() => handleNextPage('req')}>
-                        <IoCaretForward />
-                        Next
-                    </button>
-                    )}
+                            <button 
+                                onClick={() => handleNextPage('req')}
+                                className="flex items-center justify-center px-4 py-2 text-black text-sm font-medium bg-indigo-600 rounded-lg transition-all hover:bg-indigo-700 active:scale-95"
+                            >
+                                Next <IoCaretForward className="ml-1" />
+                            </button>
+                        )}
+                    </div>
                 </div>
+            </div>
+        </div>
 
 
-
-
-            <h2>Weekly Suggest Item</h2>    
-            <button 
-                    className={`toggle-button ${selectedSemester === "Sem 2" ? "active" : ""}`} 
+        <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
+            <div className="flex flex-col">
+                <h3 className="text-xl font-semibold p-6 border-b leading-none m-0">Weekly Suggest Item</h3>
+                <button 
+                    className={`toggle-button ${selectedSemester === "Sem 2" ? "active" : ""} ml-auto mr-6 mt-4 mb-4`} 
                     onClick={handleToggle}>
                     <span className={`toggle-text ${selectedSemester === "Sem 2" ? "active" : ""}`}>
                         {selectedSemester === "Sem 1" ? "Sem 1" : "Sem 2"}
                     </span>
                 </button>
-            <table>
-                <thead>
-                <tr>
-                    <th>Week</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Reference</th>
-                    <th>Item Request</th>
-                </tr>
-                </thead>
-                    <tbody>
-                        { curWeekRows.map((week) => (
-                            <tr key={week.id}>
-                                <td>{week.week}</td>
-                                <td>
-                                    {selectedSemester === "Sem 1"
-                                        ? week.sem1StartDate
-                                        : week.sem2StartDate}
-                                </td>
-                                <td>
-                                    {selectedSemester === "Sem 1"
-                                        ? week.sem1EndDate
-                                        : week.sem2EndDate}
-                                </td>
-                                <td>{week.reference ? week.reference : "-"}</td>
-                                <td>
-                                    <ul>
-                                        {week.item && week.item.map((item, index) => (
-                                            <li key={index}>
-                                                {item.category}: {item.name}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </td>
-                            </tr>                            
-                        )) }
-                    </tbody>
-                </table>
+                <div className="bg-white rounded-lg shadow px-4 py-2">
+                    <table className="min-w-full">
+                        <thead>
+                            <tr className="bg-gray-100 rounded-t-lg">
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                    WEEK
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                    START DATE
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                    END DATE
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0">
+                                    REFERENCE
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase border-0 last:rounded-tr-lg">
+                                    ITEM REQUEST
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            { curWeekRows.map((week) => (
+                                <tr key={week.id}>
+                                    <td className="px-6 py-4 text-center border-0">
+                                        {week.week}
+                                    </td>
+                                    <td className="px-6 py-4 text-center border-0">
+                                        {selectedSemester === "Sem 1"
+                                            ? week.sem1StartDate
+                                            : week.sem2StartDate}
+                                    </td>
+                                    <td className="px-6 py-4 text-center border-0">
+                                        {selectedSemester === "Sem 1"
+                                            ? week.sem1EndDate
+                                            : week.sem2EndDate}
+                                    </td>
+                                    <td className="px-6 py-4 text-center border-0">
+                                        {week.reference ? week.reference : "-"}
+                                    </td>
+                                    <td className="px-6 py-4 text-center border-0">
+                                        <ul>
+                                            {week.item && week.item.map((item, index) => (
+                                                <li key={index}>
+                                                    {item.category}: {item.name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                </tr>                            
+                            )) }
+                        </tbody>
+                    </table>
 
-                <div className='table-navigate'>
-                    <button onClick={() => handlePreviousPage('week')} disabled={curWeekPage === 1}>
-                        <IoCaretBack />
-                            Back
+                    <div className="table-navigate flex justify-center items-center gap-4 mt-4">
+                    <button 
+                        onClick={() => handlePreviousPage('week')} 
+                        disabled={curWeekPage === 1}
+                        className="flex items-center justify-center px-4 py-2 text-black text-sm font-medium bg-indigo-600 rounded-lg transition-all hover:bg-indigo-700 active:scale-95">
+                        <IoCaretBack className="ml-1"/>
+                        Back
                     </button>
-                    <p>{curWeekPage}</p>
-                        {curWeekRows.length === rowsPerPage && (
-                    <button onClick={() => handleNextPage('week')}>
-                        <IoCaretForward />
-                        Next
-                    </button>
+                    <p className="text-gray-800 text-sm font-semibold">{curWeekPage}</p>
+                    {curWeekRows.length === rowsPerPage && (
+                        <button 
+                            onClick={() => handleNextPage('week')}
+                            className="flex items-center justify-center px-4 py-2 text-black text-sm font-medium bg-indigo-600 rounded-lg transition-all hover:bg-indigo-700 active:scale-95">
+                            <IoCaretForward className="ml-1"/>
+                            Next
+                        </button>
                     )}
                 </div>
+            </div>
+        </div>
+    </div>
       </div>
     </div>
     );

@@ -60,6 +60,8 @@ const QRScanner = () => {
             <div className="dashboard-content">
                 <div className="p-4">
                     <h1 className="section-header">Scan Collection QR Code</h1>
+                    {/* <div className="items-center min-h-screen bg-gray-200"> */}
+                        <div className="bg-white p-6 justify-center rounded-lg shadow-lg w-min-full">
                     <div id="reader"></div>
                     {scanResult && (
                         <div
@@ -76,6 +78,8 @@ const QRScanner = () => {
                             </button>
                         </div>
                     )}
+                    </div>
+                    {/* </div> */}
                 </div>
             </div>
         </div>

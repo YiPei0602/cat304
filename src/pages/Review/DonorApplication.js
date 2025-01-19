@@ -162,7 +162,7 @@ function DonorApplication() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center border-0 flex justify-center gap-2">
-                    {app.status === 'Pending' && (
+                    {app.status === 'Pending' ? (
                       <>
                         <button
                           className="px-4 py-2 text-sm font-medium bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
@@ -177,6 +177,8 @@ function DonorApplication() {
                           Reject
                         </button>
                       </>
+                    ) : (
+                      <span>No action is required</span>
                     )}
                   </td>
                 </tr>

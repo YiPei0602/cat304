@@ -16,7 +16,6 @@ const menuConfig = {
     { title: "Dashboard", path: "/adminDashboard", icon: <FaHome /> },
     { title: "Inventory", path: "/inventory", icon: <MdInventory /> },
     { title: "QR Scanner", path: "/qrscanner", icon: <IoMdQrScanner /> },
-    { title: "Reports", path: "/reports", icon: <FaTasks /> },
     { title: "Application", path: "/donor-application", icon: <FaTasks /> },
     { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
     { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
@@ -30,9 +29,7 @@ const menuConfig = {
   donor: [
     { title: "Dashboard", path: "/donorDashboard", icon: <FaHome /> },
     { title: "Donation History", path: "/donor/history", icon: <FaHistory /> },
-    { title: "Notifications", path: "/notifications", icon: <IoMdNotifications /> },
     { title: "Donation Suggestion", path: "/suggestion", icon: <TbBulb /> },
-    { title: "Settings", path: "/settings", icon: <MdOutlineSettings /> },
   ],
 };
 
